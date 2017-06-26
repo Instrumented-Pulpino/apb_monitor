@@ -106,6 +106,7 @@ begin
             when ADDR_reg_OS_instru_service          => s_reg_OS_instru_service          <= pwdata;
             when ADDR_reg_OS_instru_kernel_functions => s_reg_OS_instru_kernel_functions <= pwdata xor s_reg_OS_instru_kernel_functions;
             when ADDR_reg_config                     => s_reg_config                     <= pwdata;
+            when others                              => null;
           end case;
         end if;
       end if;
