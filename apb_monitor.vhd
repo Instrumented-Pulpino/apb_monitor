@@ -41,19 +41,19 @@ end apb_monitor;
 
 architecture architecture_apb_monitor of apb_monitor is
 
-  constant ADDR_reg_tpl_kern_srunning          : std_logic_vector(31 downto 0) := X"50000000";
-  constant ADDR_reg_tpl_kern_selected          : std_logic_vector(31 downto 0) := X"50000004";
-  constant ADDR_reg_tpl_kern_running           : std_logic_vector(31 downto 0) := X"50000008";
-  constant ADDR_reg_tpl_kern_elected           : std_logic_vector(31 downto 0) := X"5000000C";
-  constant ADDR_reg_tpl_kern_runningID         : std_logic_vector(31 downto 0) := X"50000010";
-  constant ADDR_reg_tpl_kern_electedID         : std_logic_vector(31 downto 0) := X"50000014";
-  constant ADDR_tpl_kern_need_switch           : std_logic_vector(31 downto 0) := X"50000018";
-  constant ADDR_tpl_kern_need_schedule         : std_logic_vector(31 downto 0) := X"5000001C";
-  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"50000020";
-  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"50000024";
-  constant ADDR_reg_return                     : std_logic_vector(31 downto 0) := X"50000028";
-  constant ADDR_reg_config                     : std_logic_vector(31 downto 0) := X"5000002C";
-  constant ADDR_reg_return_2                   : std_logic_vector(31 downto 0) := X"50000030";
+  constant ADDR_reg_tpl_kern_srunning          : std_logic_vector(31 downto 0) := X"1A108000";
+  constant ADDR_reg_tpl_kern_selected          : std_logic_vector(31 downto 0) := X"1A108004";
+  constant ADDR_reg_tpl_kern_running           : std_logic_vector(31 downto 0) := X"1A108008";
+  constant ADDR_reg_tpl_kern_elected           : std_logic_vector(31 downto 0) := X"1A10800C";
+  constant ADDR_reg_tpl_kern_runningID         : std_logic_vector(31 downto 0) := X"1A108010";
+  constant ADDR_reg_tpl_kern_electedID         : std_logic_vector(31 downto 0) := X"1A108014";
+  constant ADDR_tpl_kern_need_switch           : std_logic_vector(31 downto 0) := X"1A108018";
+  constant ADDR_tpl_kern_need_schedule         : std_logic_vector(31 downto 0) := X"1A10801C";
+  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108020";
+  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108024";
+  constant ADDR_reg_return                     : std_logic_vector(31 downto 0) := X"1A108028";
+  constant ADDR_reg_config                     : std_logic_vector(31 downto 0) := X"1A10802C";
+  constant ADDR_reg_return_2                   : std_logic_vector(31 downto 0) := X"1A108030";
 
   signal s_reg_tpl_kern_srunning          : std_logic_vector(31 downto 0) := (others => '0');
   signal s_reg_tpl_kern_selected          : std_logic_vector(31 downto 0) := (others => '0');
