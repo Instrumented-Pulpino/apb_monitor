@@ -1,0 +1,4 @@
+apb_monitor:
+  files: [
+    apb_monitor.vhd,
+  ]
