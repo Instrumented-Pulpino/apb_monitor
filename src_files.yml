@@ -1,4 +1,12 @@
 apb_monitor:
   files: [
-    apb_monitor.vhd,
+    Prop1.vhd,
+    Prop2.vhd,
+    Prop3.vhd,
+    Prop4.vhd,
+    Prop5.vhd,
+    Prop6_7.vhd,
+    Prop8.vhd,
+    properties_lvl1.vhd,
+    apb_monitor.vhd
   ]
