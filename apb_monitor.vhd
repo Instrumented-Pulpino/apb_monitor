@@ -19,7 +19,7 @@ entity apb_monitor is
 
     -- Reset, Clock
     HRESETn : in std_logic;
-    HCLK : in std_logic
+    HCLK    : in std_logic
     );
 end apb_monitor;
 
@@ -87,9 +87,22 @@ begin
 
   sequential_process : process (HCLK, HRESETn) is
   begin  -- process sequential_process
-    if HRESETn = '0' then                  -- asynchronous reset (active low)
+    if HRESETn = '0' then               -- asynchronous reset (active low)
+      reg_tpl_kern_srunning          <= (others => '0');
+      reg_tpl_kern_selected          <= (others => '0');
+      reg_tpl_kern_running           <= (others => '0');
+      reg_tpl_kern_elected           <= (others => '0');
+      reg_tpl_kern_runningID         <= (others => '0');
+      reg_tpl_kern_electedID         <= (others => '0');
+      tpl_kern_need_switch           <= (others => '0');
+      tpl_kern_need_schedule         <= '0';
+      reset                          <= '0';
+      enable_IT                      <= '0';
       reg_OS_instru_service          <= (others => '0');
       reg_OS_instru_kernel_functions <= (others => '0');
+      reg_config                     <= (others => '0');
+      reg_return                     <= (others => '0');
+      reg_return_2                   <= (others => '0');
     elsif HCLK'event and HCLK = '1' then      -- rising clock edge
       if (PSEL = '1' and PENABLE = '1') then  --Acces to transaction
         -- Reading APB bus (CPU to Fabric)
