@@ -92,19 +92,18 @@ begin
       reg_tpl_kern_selected          <= (others => '0');
       reg_tpl_kern_running           <= (others => '0');
       reg_tpl_kern_elected           <= (others => '0');
-      reg_tpl_kern_runningID         <= (others => '0');
-      reg_tpl_kern_electedID         <= (others => '0');
+      reg_tpl_kern_runningID         <= (others => '1');
+      reg_tpl_kern_electedID         <= (others => '1');
       tpl_kern_need_switch           <= (others => '0');
       tpl_kern_need_schedule         <= '0';
-      reset                          <= '0';
-      enable_IT                      <= '0';
       reg_OS_instru_service          <= (others => '0');
       reg_OS_instru_kernel_functions <= (others => '0');
       reg_config                     <= (others => '0');
       reg_return                     <= (others => '0');
       reg_return_2                   <= (others => '0');
     elsif HCLK'event and HCLK = '1' then      -- rising clock edge
-      if (PSEL = '1' and PENABLE = '1') then  --Acces to transaction
+      if (PSEL = '1' and PENABLE = '1') then
+
         -- Reading APB bus (CPU to Fabric)
         if(PWRITE = '1') then
           case PADDR is
@@ -122,6 +121,7 @@ begin
             when others                              => null;
           end case;
         end if;
+
       end if;
     end if;
   end process sequential_process;
