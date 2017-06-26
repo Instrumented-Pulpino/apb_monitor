@@ -4,22 +4,22 @@ use ieee.std_logic_1164.all;
 entity apb_monitor is
   port(
     -- APB input control signals
-    penable : in std_logic;             -- APB enable signal
-    psel    : in std_logic;             -- APB slave select from master
-    pwrite  : in std_logic;             -- APB direction setting
+    PENABLE : in std_logic;             -- APB enable signal
+    PSEL    : in std_logic;             -- APB slave select from master
+    PWRITE  : in std_logic;             -- APB direction setting
 
     -- APB input and addr
-    paddr  : in std_logic_vector(31 downto 0);  -- APB address
-    pwdata : in std_logic_vector(31 downto 0);  -- APB write data
+    PADDR  : in std_logic_vector(31 downto 0);  -- APB address
+    PWDATA : in std_logic_vector(31 downto 0);  -- APB write data
 
     -- APB output signals
-    prdata  : out std_logic_vector(31 downto 0);  -- APB read data
-    pready  : out std_logic;  -- APB hold signal, for RW longer than 2 cycles
-    pslverr : out std_logic;
+    PRDATA  : out std_logic_vector(31 downto 0);  -- APB read data
+    PREADY  : out std_logic;  -- APB hold signal, for RW longer than 2 cycles
+    PSLVERR : out std_logic;
 
     -- Reset, Clock
-    prst : in std_logic;
-    pclk : in std_logic
+    HRESETn : in std_logic;
+    HCLK : in std_logic
     );
 end apb_monitor;
 
@@ -69,8 +69,8 @@ architecture architecture_apb_monitor of apb_monitor is
 begin
 
   -- Default affectations
-  pslverr   <= '0';
-  pready    <= '1';
+  PSLVERR   <= '0';
+  PREADY    <= '1';
   reset     <= reg_config(0);
   enable_IT <= reg_config(1);
 
@@ -85,27 +85,27 @@ begin
   E6                <= kernel_state(6);
   E7                <= kernel_state(7);
 
-  sequential_process : process (pclk, prst) is
+  sequential_process : process (HCLK, HRESETn) is
   begin  -- process sequential_process
-    if prst = '0' then                  -- asynchronous reset (active low)
+    if HRESETn = '0' then                  -- asynchronous reset (active low)
       reg_OS_instru_service          <= (others => '0');
       reg_OS_instru_kernel_functions <= (others => '0');
-    elsif pclk'event and pclk = '1' then      -- rising clock edge
-      if (psel = '1' and penable = '1') then  --Acces to transaction
+    elsif HCLK'event and HCLK = '1' then      -- rising clock edge
+      if (PSEL = '1' and PENABLE = '1') then  --Acces to transaction
         -- Reading APB bus (CPU to Fabric)
-        if(pwrite = '1') then
-          case paddr is
-            when ADDR_reg_tpl_kern_srunning          => reg_tpl_kern_srunning          <= pwdata;
-            when ADDR_reg_tpl_kern_selected          => reg_tpl_kern_selected          <= pwdata;
-            when ADDR_reg_tpl_kern_running           => reg_tpl_kern_running           <= pwdata;
-            when ADDR_reg_tpl_kern_elected           => reg_tpl_kern_elected           <= pwdata;
-            when ADDR_reg_tpl_kern_runningID         => reg_tpl_kern_runningID         <= pwdata;
-            when ADDR_reg_tpl_kern_electedID         => reg_tpl_kern_electedID         <= pwdata;
-            when ADDR_tpl_kern_need_switch           => tpl_kern_need_switch           <= pwdata(1 downto 0);
-            when ADDR_tpl_kern_need_schedule         => tpl_kern_need_schedule         <= pwdata(0);
-            when ADDR_reg_OS_instru_service          => reg_OS_instru_service          <= pwdata;
-            when ADDR_reg_OS_instru_kernel_functions => reg_OS_instru_kernel_functions <= pwdata xor reg_OS_instru_kernel_functions;
-            when ADDR_reg_config                     => reg_config                     <= pwdata;
+        if(PWRITE = '1') then
+          case PADDR is
+            when ADDR_reg_tpl_kern_srunning          => reg_tpl_kern_srunning          <= PWDATA;
+            when ADDR_reg_tpl_kern_selected          => reg_tpl_kern_selected          <= PWDATA;
+            when ADDR_reg_tpl_kern_running           => reg_tpl_kern_running           <= PWDATA;
+            when ADDR_reg_tpl_kern_elected           => reg_tpl_kern_elected           <= PWDATA;
+            when ADDR_reg_tpl_kern_runningID         => reg_tpl_kern_runningID         <= PWDATA;
+            when ADDR_reg_tpl_kern_electedID         => reg_tpl_kern_electedID         <= PWDATA;
+            when ADDR_tpl_kern_need_switch           => tpl_kern_need_switch           <= PWDATA(1 downto 0);
+            when ADDR_tpl_kern_need_schedule         => tpl_kern_need_schedule         <= PWDATA(0);
+            when ADDR_reg_OS_instru_service          => reg_OS_instru_service          <= PWDATA;
+            when ADDR_reg_OS_instru_kernel_functions => reg_OS_instru_kernel_functions <= PWDATA xor reg_OS_instru_kernel_functions;
+            when ADDR_reg_config                     => reg_config                     <= PWDATA;
             when others                              => null;
           end case;
         end if;
@@ -113,8 +113,9 @@ begin
     end if;
   end process sequential_process;
 
-  combinational_process : process (kernel_state_bits, paddr, penable, psel,
-                                   pwrite, reg_OS_instru_kernel_functions,
+  combinational_process : process (PADDR, PENABLE, PSEL, PWRITE,
+                                   kernel_state_bits,
+                                   reg_OS_instru_kernel_functions,
                                    reg_OS_instru_service, reg_config,
                                    reg_return, reg_return_2,
                                    reg_tpl_kern_elected,
@@ -127,22 +128,22 @@ begin
                                    tpl_kern_need_switch) is
   begin  -- process combinational_process
     -- Writing APB bus (Fabric to CPU)
-    if (pwrite = '0' and psel = '1' and penable = '1') then
-      case paddr is
-        when ADDR_reg_tpl_kern_srunning          => prdata <= reg_tpl_kern_srunning;
-        when ADDR_reg_tpl_kern_selected          => prdata <= reg_tpl_kern_selected;
-        when ADDR_reg_tpl_kern_running           => prdata <= reg_tpl_kern_running;
-        when ADDR_reg_tpl_kern_elected           => prdata <= reg_tpl_kern_elected;
-        when ADDR_reg_tpl_kern_runningID         => prdata <= reg_tpl_kern_runningID;
-        when ADDR_reg_tpl_kern_electedID         => prdata <= reg_tpl_kern_electedID;
-        when ADDR_tpl_kern_need_switch           => prdata <= (X"0000000" & "00" & tpl_kern_need_switch);
-        when ADDR_tpl_kern_need_schedule         => prdata <= (X"0000000" & "000" & tpl_kern_need_schedule);
-        when ADDR_reg_OS_instru_service          => prdata <= reg_OS_instru_service;
-        when ADDR_reg_OS_instru_kernel_functions => prdata <= reg_OS_instru_kernel_functions;
-        when ADDR_reg_config                     => prdata <= reg_config;
-        when ADDR_reg_return                     => prdata <= reg_return;
-        when ADDR_reg_return_2                   => prdata <= reg_return_2;
-        when others                              => prdata <= (others => '0');
+    if (PWRITE = '0' and PSEL = '1' and PENABLE = '1') then
+      case PADDR is
+        when ADDR_reg_tpl_kern_srunning          => PRDATA <= reg_tpl_kern_srunning;
+        when ADDR_reg_tpl_kern_selected          => PRDATA <= reg_tpl_kern_selected;
+        when ADDR_reg_tpl_kern_running           => PRDATA <= reg_tpl_kern_running;
+        when ADDR_reg_tpl_kern_elected           => PRDATA <= reg_tpl_kern_elected;
+        when ADDR_reg_tpl_kern_runningID         => PRDATA <= reg_tpl_kern_runningID;
+        when ADDR_reg_tpl_kern_electedID         => PRDATA <= reg_tpl_kern_electedID;
+        when ADDR_tpl_kern_need_switch           => PRDATA <= (X"0000000" & "00" & tpl_kern_need_switch);
+        when ADDR_tpl_kern_need_schedule         => PRDATA <= (X"0000000" & "000" & tpl_kern_need_schedule);
+        when ADDR_reg_OS_instru_service          => PRDATA <= reg_OS_instru_service;
+        when ADDR_reg_OS_instru_kernel_functions => PRDATA <= reg_OS_instru_kernel_functions;
+        when ADDR_reg_config                     => PRDATA <= reg_config;
+        when ADDR_reg_return                     => PRDATA <= reg_return;
+        when ADDR_reg_return_2                   => PRDATA <= reg_return_2;
+        when others                              => PRDATA <= (others => '0');
       end case;
     end if;
 
