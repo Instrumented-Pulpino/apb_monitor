@@ -412,4 +412,128 @@ begin
       release_resource_service => release_resource_service,
       start_os_service         => start_os_service);
 
+  -- psl default clock is rising_edge(HCLK);
+
+  -- psl property Prop01 is always(not(E2) and not(E6));
+
+  -- psl property Prop02 is always(fell(E0) -> (E1 or E3 or E4));
+
+  -- psl property Prop03 is always(fell(E1) -> (E0));
+
+  -- psl property Prop04 is always(fell(E3) -> (E0));
+
+  -- psl property Prop05 is always(fell(E4) -> (E0 or E5 or E7));
+
+  -- psl property Prop06 is always(fell(E5) -> (E1));
+
+  -- psl property Prop07 is always(fell(E7) -> (E3));
+
+  -- psl property Prop08 is always(rose(run_elected) -> (E1 or E3 or E5 or E7));
+
+  -- psl property Prop09 is always(rose(run_elected) -> call_handler);
+
+  -- psl property Prop10 is always(fell(run_elected) -> call_handler);
+
+  -- psl property Prop11 is always(rose(call_service) -> E0);
+
+  -- psl property Prop12 is always(fell(call_service) -> (not(E5) and not(E7)));
+
+  -- psl property Prop13 is always(rose(call_context) -> (E1 or E3));
+
+  -- psl property Prop14 is always(fell(run_elected) -> call_context);
+
+  -- psl property Prop15 is always(call_service -> call_handler);
+
+  -- psl property Prop16 is always(call_context -> call_handler);
+
+  -- psl property Prop17 is always(rose(call_handler) -> (rose(call_service) before fell(call_handler)) and (fell(call_service) before fell(call_handler)));
+
+  -- psl property Prop18 is always(rose(call_save) -> (E3 and call_context));
+
+  -- psl property Prop19 is always(activate_task_service -> (not(E1) and not(E5)));
+
+  -- psl property Prop20 is always(fell(activate_task_service) -> (E0 or E3 or E4));
+
+  -- psl property Prop21 is always(terminate_task_service -> (E0 or E1));
+
+  -- psl property Prop22 is always(fell(terminate_task_service) -> E1);
+
+  -- psl property Prop23 is always(compare_entries -> (bubble_up or bubble_down));
+
+  -- psl property Prop24 is always(bubble_up -> (put_new_proc or put_preempted_proc));
+
+  -- psl property Prop25 is always(bubble_down -> (remove_front_proc or remove_proc));
+
+  -- psl property Prop26 is always(put_preempted_proc -> run_elected);
+
+  -- psl property Prop27 is always(put_new_proc -> (release or activate_task));
+
+  -- psl property Prop28 is always(remove_front_proc -> start);
+
+  -- psl property Prop29 is always(init_proc -> start);
+
+  -- psl property Prop30 is always(release -> set_event);
+
+  -- psl property Prop31 is always(run_elected -> call_context);
+
+  -- psl property Prop32 is always(start -> (schedule_from_running or terminate_task_service or chain_task_service or start_scheduling or release));
+
+  -- psl property Prop33 is always(release_internal_resource -> (block_s or terminate or schedule_service));
+
+  -- psl property Prop34 is always(block_s -> wait_event_service);
+
+  -- psl property Prop35 is always(terminate -> (terminate_task_service or chain_task_service));
+
+  -- psl property Prop36 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task));
+
+  -- psl property Prop37 is always(set_event -> (set_event_service or action_set_event));
+
+  -- psl property Prop38 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or release_resource_service));
+
+  -- psl property Prop39 is always(start_scheduling -> start_os_service);
+
+  -- psl property Prop40 is always(init_os -> start_os_service);
+
+  -- psl assert Prop01;
+  -- psl assert Prop02;
+  -- psl assert Prop03;
+  -- psl assert Prop04;
+  -- psl assert Prop05;
+  -- psl assert Prop06;
+  -- psl assert Prop07;
+  -- psl assert Prop08;
+  -- psl assert Prop09;
+  -- psl assert Prop10;
+  -- psl assert Prop11;
+  -- psl assert Prop12;
+  -- psl assert Prop13;
+  -- psl assert Prop14;
+  -- psl assert Prop15;
+  -- psl assert Prop16;
+  -- psl assert Prop17;
+  -- psl assert Prop18;
+  -- psl assert Prop19;
+  -- psl assert Prop20;
+  -- psl assert Prop21;
+  -- psl assert Prop22;
+  -- psl assert Prop23;
+  -- psl assert Prop24;
+  -- psl assert Prop25;
+  -- psl assert Prop26;
+  -- psl assert Prop27;
+  -- psl assert Prop28;
+  -- psl assert Prop29;
+  -- psl assert Prop30;
+  -- psl assert Prop31;
+  -- psl assert Prop32;
+  -- psl assert Prop33;
+  -- psl assert Prop34;
+  -- psl assert Prop35;
+  -- psl assert Prop36;
+  -- psl assert Prop37;
+  -- psl assert Prop38;
+  -- psl assert Prop39;
+  -- psl assert Prop40;
+
+
 end architecture_apb_monitor;
