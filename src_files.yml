@@ -25,8 +25,9 @@ apb_monitor:
     Prop3.vhd,
     Prop4.vhd,
     Prop5.vhd,
-    Prop6_7.vhd,
+    Prop6.vhd,
+    Prop7.vhd,
     Prop8.vhd,
-    properties_lvl1.vhd,
+    trampoline_properties.vhd,
     apb_monitor.vhd
   ]

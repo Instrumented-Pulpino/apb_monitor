@@ -1,6 +1,6 @@
 --Entity Prop4 for property Prop4
 --Formula is :
---assert  always(not(E0 or E5) -> next[1](not(E3))); 
+--assert  always(fell(E3) -> (E0)); 
 
 
 
@@ -17,7 +17,7 @@ entity Prop4 is
 	 reset_n : in std_logic;
 	 cond_3_2 : in std_logic;
 	 pending_3 : out std_logic;
-	 trigger_next_3_3 : out std_logic
+	 trigger_imply_3_2 : out std_logic
 	);
 end entity Prop4;
 --end of entity 
@@ -27,32 +27,12 @@ end entity Prop4;
 architecture mon of Prop4 is
 
 --internal signal
-signal	trigger_imply_3_2, trigger_always_3_1, trigger_init_3_0	: std_logic;
+signal	trigger_always_3_1, trigger_init_3_0	: std_logic;
 
 begin
 
 --pending expression
 	pending_3 <= '0';
-
-	next_3_3 : mnt_next
-	generic map (
-		GATED_CLOCK => 0,
-		OP_TYPE => 0,
-		EDGE =>'1',
-		LEVEL =>'0',
-		NUM_CLK => 1
-	)
-	port map (
-		--clk_en not connected
-		clk_en => '1',
-		clk => clk,
-		reset_n => reset_n,
-		start => trigger_imply_3_2,
-		pending => OPEN,
-		trigger => trigger_next_3_3
-	);
-
-
 
 	imply_3_2 : mnt_impl	--no generic port
 	port map (

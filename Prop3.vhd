@@ -1,6 +1,6 @@
 --Entity Prop3 for property Prop3
 --Formula is :
---assert  always(not(E5 or E7) -> next[1](not(E1))); 
+--assert  always(fell(E1) -> (E0)); 
 
 
 
@@ -17,7 +17,7 @@ entity Prop3 is
 	 reset_n : in std_logic;
 	 cond_2_2 : in std_logic;
 	 pending_2 : out std_logic;
-	 trigger_next_2_3 : out std_logic
+	 trigger_imply_2_2 : out std_logic
 	);
 end entity Prop3;
 --end of entity 
@@ -27,32 +27,12 @@ end entity Prop3;
 architecture mon of Prop3 is
 
 --internal signal
-signal	trigger_imply_2_2, trigger_always_2_1, trigger_init_2_0	: std_logic;
+signal	trigger_always_2_1, trigger_init_2_0	: std_logic;
 
 begin
 
 --pending expression
 	pending_2 <= '0';
-
-	next_2_3 : mnt_next
-	generic map (
-		GATED_CLOCK => 0,
-		OP_TYPE => 0,
-		EDGE =>'1',
-		LEVEL =>'0',
-		NUM_CLK => 1
-	)
-	port map (
-		--clk_en not connected
-		clk_en => '1',
-		clk => clk,
-		reset_n => reset_n,
-		start => trigger_imply_2_2,
-		pending => OPEN,
-		trigger => trigger_next_2_3
-	);
-
-
 
 	imply_2_2 : mnt_impl	--no generic port
 	port map (

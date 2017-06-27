@@ -1,6 +1,6 @@
 --Entity Prop5 for property Prop5
 --Formula is :
---assert  always(fell(E0) -> E4); 
+--assert  always(fell(E4) -> (E0 or E5 or E7)); 
 
 
 

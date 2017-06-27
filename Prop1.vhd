@@ -1,6 +1,6 @@
 --Entity Prop1 for property Prop1
 --Formula is :
---assert  always(not(E2 or E6)); 
+--assert  always(not(E2) and not(E6)); 
 
 
 

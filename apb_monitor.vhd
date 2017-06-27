@@ -33,8 +33,8 @@ architecture architecture_apb_monitor of apb_monitor is
   constant ADDR_reg_tpl_kern_electedID         : std_logic_vector(31 downto 0) := X"1A108014";
   constant ADDR_tpl_kern_need_switch           : std_logic_vector(31 downto 0) := X"1A108018";
   constant ADDR_tpl_kern_need_schedule         : std_logic_vector(31 downto 0) := X"1A10801C";
-  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108020";
-  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108024";
+  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108020";
+  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108024";
   constant ADDR_reg_return                     : std_logic_vector(31 downto 0) := X"1A108028";
   constant ADDR_reg_config                     : std_logic_vector(31 downto 0) := X"1A10802C";
   constant ADDR_reg_return_2                   : std_logic_vector(31 downto 0) := X"1A108030";
@@ -57,29 +57,58 @@ architecture architecture_apb_monitor of apb_monitor is
   signal kernel_state_bits : std_logic_vector(2 downto 0);
   signal kernel_state      : std_logic_vector(7 downto 0);
 
-  component properties_lvl1 is
+  component trampoline_properties is
     port (
-      clk              : in  std_logic;
-      reset_n          : in  std_logic;
-      E0               : in  std_logic;
-      E1               : in  std_logic;
-      E2               : in  std_logic;
-      E3               : in  std_logic;
-      E4               : in  std_logic;
-      E5               : in  std_logic;
-      E6               : in  std_logic;
-      E7               : in  std_logic;
-      run_elected      : in  std_logic;
-      pending          : out std_logic;
-      valid            : out std_logic;
-      valid_7_Prop1    : out std_logic;
-      valid_8_Prop2    : out std_logic;
-      valid_9_Prop3    : out std_logic;
-      valid_10_Prop4   : out std_logic;
-      valid_11_Prop5   : out std_logic;
-      valid_12_Prop6_7 : out std_logic;
-      valid_13_Prop8   : out std_logic);
-  end component properties_lvl1;
+      clk                       : in  std_logic;
+      reset_n                   : in  std_logic;
+      E0                        : in  std_logic;
+      E1                        : in  std_logic;
+      E2                        : in  std_logic;
+      E3                        : in  std_logic;
+      E4                        : in  std_logic;
+      E5                        : in  std_logic;
+      E6                        : in  std_logic;
+      E7                        : in  std_logic;
+      call_handler              : in  std_logic;
+      call_service              : in  std_logic;
+      call_context              : in  std_logic;
+      compare_entries           : in  std_logic;
+      bubble_up                 : in  std_logic;
+      bubble_down               : in  std_logic;
+      put_new_proc              : in  std_logic;
+      put_preempted_proc        : in  std_logic;
+      remove_front_proc         : in  std_logic;
+      get_internal_resource     : in  std_logic;
+      release_internal_resource : in  std_logic;
+      preempt                   : in  std_logic;
+      run_elected               : in  std_logic;
+      start                     : in  std_logic;
+      schedule_from_running     : in  std_logic;
+      terminate                 : in  std_logic;
+      block_s                   : in  std_logic;
+      activate_task             : in  std_logic;
+      release                   : in  std_logic;
+      set_event                 : in  std_logic;
+      init_proc                 : in  std_logic;
+      init_os                   : in  std_logic;
+      remove_proc               : in  std_logic;
+      start_scheduling          : in  std_logic;
+      action_activate_task      : in  std_logic;
+      action_set_event          : in  std_logic;
+      call_save                 : in  std_logic;
+      reset                     : in  std_logic;
+      enable_IT                 : in  std_logic;
+      pending                   : out std_logic;
+      valid                     : out std_logic;
+      valid_8_Prop1             : out std_logic;
+      valid_9_Prop2             : out std_logic;
+      valid_10_Prop3            : out std_logic;
+      valid_11_Prop4            : out std_logic;
+      valid_12_Prop5            : out std_logic;
+      valid_13_Prop6            : out std_logic;
+      valid_14_Prop7            : out std_logic;
+      valid_15_Prop8            : out std_logic);
+  end component trampoline_properties;
 
   -- Atomics
   signal E0                        : std_logic;
@@ -121,17 +150,12 @@ architecture architecture_apb_monitor of apb_monitor is
   signal enable_IT                 : std_logic;
 
   -- Monitor evaluation
-  signal valid_lvl1 : std_logic;
-  signal valid_lvl2 : std_logic;
-  signal valid_lvl3 : std_logic;
-  signal valid_lvl4 : std_logic;
-  signal valid      : std_logic;
+  signal valid : std_logic;
 begin
 
   -- Default affectations
   PSLVERR <= '0';
   PREADY  <= '1';
-  valid   <= valid_lvl1 and valid_lvl2 and valid_lvl3 and valid_lvl4;
 
   -- Kernel state
   kernel_state_bits <= tpl_kern_need_schedule & tpl_kern_need_switch;
@@ -263,23 +287,101 @@ begin
     end case;
   end process combinational_process;
 
-  lvl1_monitor : properties_lvl1
+  trampoline_properties_monitor : trampoline_properties
     port map (
-      clk         => HCLK,
-      reset_n     => HRESETn,
-      E0          => E0,
-      E1          => E1,
-      E2          => E2,
-      E3          => E3,
-      E4          => E4,
-      E5          => E5,
-      E6          => E6,
-      E7          => E7,
-      run_elected => run_elected,
-      valid       => valid_lvl1);
+      clk                       => HCLK,
+      reset_n                   => HRESETn,
+      E0                        => E0,
+      E1                        => E1,
+      E2                        => E2,
+      E3                        => E3,
+      E4                        => E4,
+      E5                        => E5,
+      E6                        => E6,
+      E7                        => E7,
+      call_handler              => call_handler,
+      call_service              => call_service,
+      call_context              => call_context,
+      compare_entries           => compare_entries,
+      bubble_up                 => bubble_up,
+      bubble_down               => bubble_down,
+      put_new_proc              => put_new_proc,
+      put_preempted_proc        => put_preempted_proc,
+      remove_front_proc         => remove_front_proc,
+      get_internal_resource     => get_internal_resource,
+      release_internal_resource => release_internal_resource,
+      preempt                   => preempt,
+      run_elected               => run_elected,
+      start                     => start,
+      schedule_from_running     => schedule_from_running,
+      terminate                 => terminate,
+      block_s                   => block_s,
+      activate_task             => activate_task,
+      release                   => release,
+      set_event                 => set_event,
+      init_proc                 => init_proc,
+      init_os                   => init_os,
+      remove_proc               => remove_proc,
+      start_scheduling          => start_scheduling,
+      action_activate_task      => action_activate_task,
+      action_set_event          => action_set_event,
+      call_save                 => call_save,
+      reset                     => reset,
+      enable_IT                 => enable_IT,
+      valid                     => valid);
 
-  valid_lvl2 <= '1';
-  valid_lvl3 <= '1';
-  valid_lvl4 <= '1';
+  -- psl default clock is (HCLK'event and HCLK = '1');
+
+  -- psl property Prop1 is always(not(E2) and not(E6));
+  -- psl assert Prop1;
+
+  -- psl property Prop2 is always(fell(E0) -> (E1 or E3 or E4));
+  -- psl assert Prop2;
+
+  -- psl property Prop3 is always(fell(E1) -> (E0));
+  -- psl assert Prop3;
+
+  -- psl property Prop4 is always(fell(E3) -> (E0));
+  -- psl assert Prop4;
+
+  -- psl property Prop5 is always(fell(E4) -> (E0 or E5 or E7));
+  -- psl assert Prop5;
+
+  -- psl property Prop6 is always(fell(E5) -> (E1));
+  -- psl assert Prop6;
+
+  -- psl property Prop7 is always(fell(E7) -> (E3));
+  -- psl assert Prop7;
+
+  -- psl property Prop8 is always(rose(E4) -> next(run_elected));
+  -- psl assert Prop8;
+
+  -- psl property Prop9 is always(rose(call_handler) -> run_elected);
+  -- psl assert Prop9;
+
+  -- psl property Prop10 is always(fell(call_handler) -> run_elected);
+  -- psl assert Prop10;
+
+  -- psl property Prop11 is always(rose(call_service) -> E0);
+  -- psl assert Prop11;
+
+  -- psl property Prop12 is always(fell(call_service) -> (not(E5) and not(E7)));
+  -- psl assert Prop12;
+
+  -- psl property Prop13 is always(rose(call_context) -> (E1 or E3));
+  -- psl assert Prop13;
+
+  -- psl property Prop14 is always(fell(call_context) -> run_elected);
+  -- psl assert Prop14;
+
+  -- psl property Prop15 is always(call_service -> call_handler);
+  -- psl assert Prop15;
+
+  -- psl property Prop16 is always(call_context -> call_handler);
+  -- psl assert Prop16;
+
+  -- psl property Prop17 is always(rose(call_save) -> (E3 and call_context));
+  -- psl assert Prop17;
+
 
 end architecture_apb_monitor;
