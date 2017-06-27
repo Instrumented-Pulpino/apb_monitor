@@ -1,6 +1,6 @@
---Entity Prop1 for property Prop1
+--Entity Prop06 for property Prop06
 --Formula is :
---assert  always(not(E2) and not(E6)); 
+--assert  always(fell(E5) -> (E1)); 
 
 
 
@@ -11,29 +11,39 @@ use work.psl_monitor_s_reset.all;
 
 
 --entity 
-entity Prop1 is
+entity Prop06 is
 	 port(
 	 clk : in std_logic;
 	 reset_n : in std_logic;
-	 pending_0 : out std_logic;
-	 trigger_always_0_1 : out std_logic
+	 cond_5_2 : in std_logic;
+	 pending_5 : out std_logic;
+	 trigger_imply_5_2 : out std_logic
 	);
-end entity Prop1;
+end entity Prop06;
 --end of entity 
 
 
 --architecture 
-architecture mon of Prop1 is
+architecture mon of Prop06 is
 
 --internal signal
-signal	trigger_init_0_0	: std_logic;
+signal	trigger_always_5_1, trigger_init_5_0	: std_logic;
 
 begin
 
 --pending expression
-	pending_0 <= '0';
+	pending_5 <= '0';
 
-	always_0_1 : mnt_always
+	imply_5_2 : mnt_impl	--no generic port
+	port map (
+		start => trigger_always_5_1,
+		cond => cond_5_2,
+		trigger => trigger_imply_5_2
+	);
+
+
+
+	always_5_1 : mnt_always
 	generic map (
 		EDGE => '1',
 		LEVEL =>'0',
@@ -44,13 +54,13 @@ begin
 		clk_en => '1',
 		clk => clk,
 		reset_n => reset_n,
-		start => trigger_init_0_0,
-		trigger => trigger_always_0_1
+		start => trigger_init_5_0,
+		trigger => trigger_always_5_1
 	);
 
 
 
-	init_0_0 : gen_init
+	init_5_0 : gen_init
 	generic map (
 		GATED_CLOCK => 0,
 		EDGE =>'1',
@@ -61,7 +71,7 @@ begin
 		clk_en => '1',
 		clk => clk,
 		reset_n => reset_n,
-		trigger => trigger_init_0_0
+		trigger => trigger_init_5_0
 	);
 
 

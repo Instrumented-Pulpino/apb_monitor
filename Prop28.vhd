@@ -1,6 +1,6 @@
---Entity Prop8 for property Prop8
+--Entity Prop28 for property Prop28
 --Formula is :
---assert  always(rose(E4) -> (run_elected)); 
+--assert  always(remove_front_proc -> start); 
 
 
 
@@ -11,39 +11,39 @@ use work.psl_monitor_s_reset.all;
 
 
 --entity 
-entity Prop8 is
+entity Prop28 is
 	 port(
 	 clk : in std_logic;
 	 reset_n : in std_logic;
-	 cond_7_2 : in std_logic;
-	 pending_7 : out std_logic;
-	 trigger_imply_7_2 : out std_logic
+	 cond_27_2 : in std_logic;
+	 pending_27 : out std_logic;
+	 trigger_imply_27_2 : out std_logic
 	);
-end entity Prop8;
+end entity Prop28;
 --end of entity 
 
 
 --architecture 
-architecture mon of Prop8 is
+architecture mon of Prop28 is
 
 --internal signal
-signal	trigger_always_7_1, trigger_init_7_0	: std_logic;
+signal	trigger_always_27_1, trigger_init_27_0	: std_logic;
 
 begin
 
 --pending expression
-	pending_7 <= '0';
+	pending_27 <= '0';
 
-	imply_7_2 : mnt_impl	--no generic port
+	imply_27_2 : mnt_impl	--no generic port
 	port map (
-		start => trigger_always_7_1,
-		cond => cond_7_2,
-		trigger => trigger_imply_7_2
+		start => trigger_always_27_1,
+		cond => cond_27_2,
+		trigger => trigger_imply_27_2
 	);
 
 
 
-	always_7_1 : mnt_always
+	always_27_1 : mnt_always
 	generic map (
 		EDGE => '1',
 		LEVEL =>'0',
@@ -54,13 +54,13 @@ begin
 		clk_en => '1',
 		clk => clk,
 		reset_n => reset_n,
-		start => trigger_init_7_0,
-		trigger => trigger_always_7_1
+		start => trigger_init_27_0,
+		trigger => trigger_always_27_1
 	);
 
 
 
-	init_7_0 : gen_init
+	init_27_0 : gen_init
 	generic map (
 		GATED_CLOCK => 0,
 		EDGE =>'1',
@@ -71,7 +71,7 @@ begin
 		clk_en => '1',
 		clk => clk,
 		reset_n => reset_n,
-		trigger => trigger_init_7_0
+		trigger => trigger_init_27_0
 	);
 
 

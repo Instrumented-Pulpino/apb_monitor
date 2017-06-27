@@ -96,18 +96,58 @@ architecture architecture_apb_monitor of apb_monitor is
       action_activate_task      : in  std_logic;
       action_set_event          : in  std_logic;
       call_save                 : in  std_logic;
+      activate_task_service     : in  std_logic;
+      terminate_task_service    : in  std_logic;
+      chain_task_service        : in  std_logic;
+      schedule_service          : in  std_logic;
+      set_event_service         : in  std_logic;
+      wait_event_service        : in  std_logic;
+      release_resource_service  : in  std_logic;
+      start_os_service          : in  std_logic;
       reset                     : in  std_logic;
       enable_IT                 : in  std_logic;
       pending                   : out std_logic;
       valid                     : out std_logic;
-      valid_8_Prop1             : out std_logic;
-      valid_9_Prop2             : out std_logic;
-      valid_10_Prop3            : out std_logic;
-      valid_11_Prop4            : out std_logic;
-      valid_12_Prop5            : out std_logic;
-      valid_13_Prop6            : out std_logic;
-      valid_14_Prop7            : out std_logic;
-      valid_15_Prop8            : out std_logic);
+      valid_40_Prop01           : out std_logic;
+      valid_41_Prop02           : out std_logic;
+      valid_42_Prop03           : out std_logic;
+      valid_43_Prop04           : out std_logic;
+      valid_44_Prop05           : out std_logic;
+      valid_45_Prop06           : out std_logic;
+      valid_46_Prop07           : out std_logic;
+      valid_47_Prop08           : out std_logic;
+      valid_48_Prop09           : out std_logic;
+      valid_49_Prop10           : out std_logic;
+      valid_50_Prop11           : out std_logic;
+      valid_51_Prop12           : out std_logic;
+      valid_52_Prop13           : out std_logic;
+      valid_53_Prop14           : out std_logic;
+      valid_54_Prop15           : out std_logic;
+      valid_55_Prop16           : out std_logic;
+      valid_56_Prop17           : out std_logic;
+      valid_57_Prop18           : out std_logic;
+      valid_58_Prop19           : out std_logic;
+      valid_59_Prop20           : out std_logic;
+      valid_60_Prop21           : out std_logic;
+      valid_61_Prop22           : out std_logic;
+      valid_62_Prop23           : out std_logic;
+      valid_63_Prop24           : out std_logic;
+      valid_64_Prop25           : out std_logic;
+      valid_65_Prop26           : out std_logic;
+      valid_66_Prop27           : out std_logic;
+      valid_67_Prop28           : out std_logic;
+      valid_68_Prop29           : out std_logic;
+      valid_69_Prop30           : out std_logic;
+      valid_70_Prop31           : out std_logic;
+      valid_71_Prop32           : out std_logic;
+      valid_72_Prop33           : out std_logic;
+      valid_73_Prop34           : out std_logic;
+      valid_74_Prop35           : out std_logic;
+      valid_75_Prop36           : out std_logic;
+      valid_76_Prop37           : out std_logic;
+      valid_77_Prop38           : out std_logic;
+      valid_78_Prop39           : out std_logic;
+      valid_79_Prop40           : out std_logic);
   end component trampoline_properties;
 
   -- Atomics
@@ -146,8 +186,29 @@ architecture architecture_apb_monitor of apb_monitor is
   signal action_activate_task      : std_logic;
   signal action_set_event          : std_logic;
   signal call_save                 : std_logic;
+  signal activate_task_service     : std_logic;
+  signal terminate_task_service    : std_logic;
+  signal chain_task_service        : std_logic;
+  signal schedule_service          : std_logic;
+  signal set_event_service         : std_logic;
+  signal wait_event_service        : std_logic;
+  signal release_resource_service  : std_logic;
+  signal start_os_service          : std_logic;
   signal reset                     : std_logic;
   signal enable_IT                 : std_logic;
+
+  component services is
+    port (
+      reg_OS_instru_service    : in  std_logic_vector(31 downto 0);
+      activate_task_service    : out std_logic;
+      terminate_task_service   : out std_logic;
+      chain_task_service       : out std_logic;
+      schedule_service         : out std_logic;
+      set_event_service        : out std_logic;
+      wait_event_service       : out std_logic;
+      release_resource_service : out std_logic;
+      start_os_service         : out std_logic);
+  end component services;
 
   -- Monitor evaluation
   signal valid : std_logic;
@@ -198,6 +259,7 @@ begin
   call_save                 <= reg_OS_instru_kernel_functions(26);
   reset                     <= reg_config(0);
   enable_IT                 <= reg_config(1);
+
 
   sequential_process : process (HCLK, HRESETn) is
   begin  -- process sequential_process
@@ -326,62 +388,28 @@ begin
       action_activate_task      => action_activate_task,
       action_set_event          => action_set_event,
       call_save                 => call_save,
+      activate_task_service     => activate_task_service,
+      terminate_task_service    => terminate_task_service,
+      chain_task_service        => chain_task_service,
+      schedule_service          => schedule_service,
+      set_event_service         => set_event_service,
+      wait_event_service        => wait_event_service,
+      release_resource_service  => release_resource_service,
+      start_os_service          => start_os_service,
       reset                     => reset,
       enable_IT                 => enable_IT,
       valid                     => valid);
 
-  -- psl default clock is (HCLK'event and HCLK = '1');
-
-  -- psl property Prop1 is always(not(E2) and not(E6));
-  -- psl assert Prop1;
-
-  -- psl property Prop2 is always(fell(E0) -> (E1 or E3 or E4));
-  -- psl assert Prop2;
-
-  -- psl property Prop3 is always(fell(E1) -> (E0));
-  -- psl assert Prop3;
-
-  -- psl property Prop4 is always(fell(E3) -> (E0));
-  -- psl assert Prop4;
-
-  -- psl property Prop5 is always(fell(E4) -> (E0 or E5 or E7));
-  -- psl assert Prop5;
-
-  -- psl property Prop6 is always(fell(E5) -> (E1));
-  -- psl assert Prop6;
-
-  -- psl property Prop7 is always(fell(E7) -> (E3));
-  -- psl assert Prop7;
-
-  -- psl property Prop8 is always(rose(E4) -> next(run_elected));
-  -- psl assert Prop8;
-
-  -- psl property Prop9 is always(rose(call_handler) -> run_elected);
-  -- psl assert Prop9;
-
-  -- psl property Prop10 is always(fell(call_handler) -> run_elected);
-  -- psl assert Prop10;
-
-  -- psl property Prop11 is always(rose(call_service) -> E0);
-  -- psl assert Prop11;
-
-  -- psl property Prop12 is always(fell(call_service) -> (not(E5) and not(E7)));
-  -- psl assert Prop12;
-
-  -- psl property Prop13 is always(rose(call_context) -> (E1 or E3));
-  -- psl assert Prop13;
-
-  -- psl property Prop14 is always(fell(call_context) -> run_elected);
-  -- psl assert Prop14;
-
-  -- psl property Prop15 is always(call_service -> call_handler);
-  -- psl assert Prop15;
-
-  -- psl property Prop16 is always(call_context -> call_handler);
-  -- psl assert Prop16;
-
-  -- psl property Prop17 is always(rose(call_save) -> (E3 and call_context));
-  -- psl assert Prop17;
-
+  services_identifier : services
+    port map (
+      reg_OS_instru_service    => reg_OS_instru_service,
+      activate_task_service    => activate_task_service,
+      terminate_task_service   => terminate_task_service,
+      chain_task_service       => chain_task_service,
+      schedule_service         => schedule_service,
+      set_event_service        => set_event_service,
+      wait_event_service       => wait_event_service,
+      release_resource_service => release_resource_service,
+      start_os_service         => start_os_service);
 
 end architecture_apb_monitor;
