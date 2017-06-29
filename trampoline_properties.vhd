@@ -46,6 +46,8 @@ entity trampoline_properties is
 	action_activate_task : in std_logic;
 	action_set_event : in std_logic;
 	call_save : in std_logic;
+	central_interrupt_handler : in std_logic;
+	counter_tick : in std_logic;
 	activate_task_service : in std_logic;
 	terminate_task_service : in std_logic;
 	chain_task_service : in std_logic;
@@ -181,7 +183,7 @@ component Prop08 is
 	 reset_n : in std_logic;
 	 cond_7_2 : in std_logic;
 	 pending_7 : out std_logic;
-	 trigger_next_7_3 : out std_logic
+	 trigger_imply_7_2 : out std_logic
 	);
 end component Prop08;
 
@@ -270,9 +272,10 @@ component Prop17 is
 	 clk : in std_logic;
 	 reset_n : in std_logic;
 	 cond_16_2 : in std_logic;
-	 expr_16_2 : in std_logic;
+	 cond_16_3 : in std_logic;
+	 expr_16_3 : in std_logic;
 	 pending_16 : out std_logic;
-	 trigger_before_16_2 : out std_logic
+	 trigger_before_16_3 : out std_logic
 	);
 end component Prop17;
 
@@ -552,38 +555,41 @@ signal valid_46_tmp : std_logic;
 signal ante_sig_18 : std_logic;
 signal cond_7_2 : std_logic;
 signal pending_7_tmp : std_logic;
-signal trigger_next_7_3 : std_logic;
+signal trigger_imply_7_2 : std_logic;
 signal valid_47_tmp : std_logic;
-signal ante_sig_19 : std_logic;
+signal sig_21 : std_logic;
+signal sig_19 : std_logic;
+signal expr_19 : std_logic;
+signal ante_sig_25 : std_logic;
 signal cond_8_2 : std_logic;
 signal pending_8_tmp : std_logic;
 signal trigger_imply_8_2 : std_logic;
 signal valid_48_tmp : std_logic;
-signal ante_sig_20 : std_logic;
+signal ante_sig_26 : std_logic;
 signal cond_9_2 : std_logic;
 signal pending_9_tmp : std_logic;
 signal trigger_imply_9_2 : std_logic;
 signal valid_49_tmp : std_logic;
-signal ante_sig_21 : std_logic;
+signal ante_sig_27 : std_logic;
 signal cond_10_2 : std_logic;
 signal pending_10_tmp : std_logic;
 signal trigger_imply_10_2 : std_logic;
 signal valid_50_tmp : std_logic;
-signal ante_sig_22 : std_logic;
+signal ante_sig_28 : std_logic;
 signal cond_11_2 : std_logic;
 signal pending_11_tmp : std_logic;
 signal trigger_imply_11_2 : std_logic;
 signal valid_51_tmp : std_logic;
-signal sig_24 : std_logic;
-signal sig_23 : std_logic;
-signal expr_23 : std_logic;
-signal ante_sig_27 : std_logic;
+signal sig_30 : std_logic;
+signal sig_29 : std_logic;
+signal expr_29 : std_logic;
+signal ante_sig_33 : std_logic;
 signal cond_12_2 : std_logic;
 signal pending_12_tmp : std_logic;
 signal trigger_imply_12_2 : std_logic;
 signal valid_52_tmp : std_logic;
-signal expr_28 : std_logic;
-signal ante_sig_30 : std_logic;
+signal expr_34 : std_logic;
+signal ante_sig_36 : std_logic;
 signal cond_13_2 : std_logic;
 signal pending_13_tmp : std_logic;
 signal trigger_imply_13_2 : std_logic;
@@ -594,37 +600,37 @@ signal valid_54_tmp : std_logic;
 signal pending_15_tmp : std_logic;
 signal trigger_imply_15_2 : std_logic;
 signal valid_55_tmp : std_logic;
-signal ante_sig_31 : std_logic;
+signal ante_sig_37 : std_logic;
 signal cond_16_2 : std_logic;
-signal ante_sig_32 : std_logic;
-signal expr_16_2 : std_logic;
+signal ante_sig_38 : std_logic;
+signal cond_16_3 : std_logic;
 signal pending_16_tmp : std_logic;
-signal trigger_before_16_2 : std_logic;
+signal trigger_before_16_3 : std_logic;
 signal valid_56_tmp : std_logic;
-signal ante_sig_33 : std_logic;
+signal ante_sig_39 : std_logic;
 signal cond_17_2 : std_logic;
 signal pending_17_tmp : std_logic;
 signal trigger_imply_17_2 : std_logic;
 signal valid_57_tmp : std_logic;
-signal expr_34 : std_logic;
+signal expr_40 : std_logic;
 signal pending_18_tmp : std_logic;
 signal trigger_imply_18_2 : std_logic;
 signal valid_58_tmp : std_logic;
-signal sig_37 : std_logic;
-signal sig_36 : std_logic;
-signal expr_36 : std_logic;
-signal ante_sig_40 : std_logic;
+signal sig_43 : std_logic;
+signal sig_42 : std_logic;
+signal expr_42 : std_logic;
+signal ante_sig_46 : std_logic;
 signal cond_19_2 : std_logic;
 signal pending_19_tmp : std_logic;
 signal trigger_imply_19_2 : std_logic;
 signal valid_59_tmp : std_logic;
-signal sig_41 : std_logic;
-signal expr_41 : std_logic;
+signal sig_47 : std_logic;
+signal expr_47 : std_logic;
 signal pending_20_tmp : std_logic;
 signal trigger_imply_20_2 : std_logic;
 signal valid_60_tmp : std_logic;
-signal expr_45 : std_logic;
-signal ante_sig_47 : std_logic;
+signal expr_51 : std_logic;
+signal ante_sig_53 : std_logic;
 signal cond_21_2 : std_logic;
 signal pending_21_tmp : std_logic;
 signal trigger_imply_21_2 : std_logic;
@@ -632,22 +638,22 @@ signal valid_61_tmp : std_logic;
 signal pending_22_tmp : std_logic;
 signal trigger_imply_22_2 : std_logic;
 signal valid_62_tmp : std_logic;
-signal expr_48 : std_logic;
+signal expr_54 : std_logic;
 signal pending_23_tmp : std_logic;
 signal trigger_imply_23_2 : std_logic;
 signal valid_63_tmp : std_logic;
-signal expr_50 : std_logic;
+signal expr_56 : std_logic;
 signal pending_24_tmp : std_logic;
 signal trigger_imply_24_2 : std_logic;
 signal valid_64_tmp : std_logic;
-signal expr_52 : std_logic;
+signal expr_58 : std_logic;
 signal pending_25_tmp : std_logic;
 signal trigger_imply_25_2 : std_logic;
 signal valid_65_tmp : std_logic;
 signal pending_26_tmp : std_logic;
 signal trigger_imply_26_2 : std_logic;
 signal valid_66_tmp : std_logic;
-signal expr_54 : std_logic;
+signal expr_60 : std_logic;
 signal pending_27_tmp : std_logic;
 signal trigger_imply_27_2 : std_logic;
 signal valid_67_tmp : std_logic;
@@ -663,38 +669,40 @@ signal valid_70_tmp : std_logic;
 signal pending_31_tmp : std_logic;
 signal trigger_imply_31_2 : std_logic;
 signal valid_71_tmp : std_logic;
-signal sig_60 : std_logic;
-signal sig_58 : std_logic;
-signal sig_56 : std_logic;
-signal expr_56 : std_logic;
+signal sig_66 : std_logic;
+signal sig_64 : std_logic;
+signal sig_62 : std_logic;
+signal expr_62 : std_logic;
 signal pending_32_tmp : std_logic;
 signal trigger_imply_32_2 : std_logic;
 signal valid_72_tmp : std_logic;
-signal sig_64 : std_logic;
-signal expr_64 : std_logic;
+signal sig_70 : std_logic;
+signal expr_70 : std_logic;
 signal pending_33_tmp : std_logic;
 signal trigger_imply_33_2 : std_logic;
 signal valid_73_tmp : std_logic;
 signal pending_34_tmp : std_logic;
 signal trigger_imply_34_2 : std_logic;
 signal valid_74_tmp : std_logic;
-signal expr_68 : std_logic;
+signal expr_74 : std_logic;
 signal pending_35_tmp : std_logic;
 signal trigger_imply_35_2 : std_logic;
 signal valid_75_tmp : std_logic;
-signal sig_72 : std_logic;
-signal sig_70 : std_logic;
-signal expr_70 : std_logic;
+signal sig_78 : std_logic;
+signal sig_76 : std_logic;
+signal expr_76 : std_logic;
 signal pending_36_tmp : std_logic;
 signal trigger_imply_36_2 : std_logic;
 signal valid_76_tmp : std_logic;
-signal expr_76 : std_logic;
+signal expr_82 : std_logic;
 signal pending_37_tmp : std_logic;
 signal trigger_imply_37_2 : std_logic;
 signal valid_77_tmp : std_logic;
-signal sig_80 : std_logic;
-signal sig_78 : std_logic;
-signal expr_78 : std_logic;
+signal sig_90 : std_logic;
+signal sig_88 : std_logic;
+signal sig_86 : std_logic;
+signal sig_84 : std_logic;
+signal expr_84 : std_logic;
 signal pending_38_tmp : std_logic;
 signal trigger_imply_38_2 : std_logic;
 signal valid_78_tmp : std_logic;
@@ -774,7 +782,7 @@ Prop08_7 : Prop08
 	 reset_n => reset_n,
 	 cond_7_2 => cond_7_2,
 	 pending_7 => pending_7_tmp,
-	 trigger_next_7_3 => trigger_next_7_3
+	 trigger_imply_7_2 => trigger_imply_7_2
 	);
 
 Prop09_8 : Prop09
@@ -854,9 +862,10 @@ Prop17_16 : Prop17
 	 clk => clk , 
 	 reset_n => reset_n,
 	 cond_16_2 => cond_16_2,
-	 expr_16_2 => expr_16_2,
+	 cond_16_3 => cond_16_3,
+	 expr_16_3 => call_service,
 	 pending_16 => pending_16_tmp,
-	 trigger_before_16_2 => trigger_before_16_2
+	 trigger_before_16_3 => trigger_before_16_3
 	);
 
 Prop18_17 : Prop18
@@ -1180,8 +1189,8 @@ mnt_47 : mnt_monitor
 	clk => clk,
 	reset_n => reset_n,
 	clk_en => '1',
-	start => trigger_next_7_3,
-	expr => run_elected,
+	start => trigger_imply_7_2,
+	expr => expr_19,
 	valid => valid_47_tmp
 	);
 
@@ -1241,7 +1250,7 @@ mnt_51 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_11_2,
-	expr => expr_23,
+	expr => expr_29,
 	valid => valid_51_tmp
 	);
 
@@ -1256,7 +1265,7 @@ mnt_52 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_12_2,
-	expr => expr_28,
+	expr => expr_34,
 	valid => valid_52_tmp
 	);
 
@@ -1315,7 +1324,7 @@ mnt_56 : mnt_monitor
 	clk => clk,
 	reset_n => reset_n,
 	clk_en => '1',
-	start => trigger_before_16_2,
+	start => trigger_before_16_3,
 	expr => '0',
 	valid => valid_56_tmp
 	);
@@ -1331,7 +1340,7 @@ mnt_57 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_17_2,
-	expr => expr_34,
+	expr => expr_40,
 	valid => valid_57_tmp
 	);
 
@@ -1346,7 +1355,7 @@ mnt_58 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_18_2,
-	expr => expr_36,
+	expr => expr_42,
 	valid => valid_58_tmp
 	);
 
@@ -1361,7 +1370,7 @@ mnt_59 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_19_2,
-	expr => expr_41,
+	expr => expr_47,
 	valid => valid_59_tmp
 	);
 
@@ -1376,7 +1385,7 @@ mnt_60 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_20_2,
-	expr => expr_45,
+	expr => expr_51,
 	valid => valid_60_tmp
 	);
 
@@ -1406,7 +1415,7 @@ mnt_62 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_22_2,
-	expr => expr_48,
+	expr => expr_54,
 	valid => valid_62_tmp
 	);
 
@@ -1421,7 +1430,7 @@ mnt_63 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_23_2,
-	expr => expr_50,
+	expr => expr_56,
 	valid => valid_63_tmp
 	);
 
@@ -1436,7 +1445,7 @@ mnt_64 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_24_2,
-	expr => expr_52,
+	expr => expr_58,
 	valid => valid_64_tmp
 	);
 
@@ -1466,7 +1475,7 @@ mnt_66 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_26_2,
-	expr => expr_54,
+	expr => expr_60,
 	valid => valid_66_tmp
 	);
 
@@ -1541,7 +1550,7 @@ mnt_71 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_31_2,
-	expr => expr_56,
+	expr => expr_62,
 	valid => valid_71_tmp
 	);
 
@@ -1556,7 +1565,7 @@ mnt_72 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_32_2,
-	expr => expr_64,
+	expr => expr_70,
 	valid => valid_72_tmp
 	);
 
@@ -1586,7 +1595,7 @@ mnt_74 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_34_2,
-	expr => expr_68,
+	expr => expr_74,
 	valid => valid_74_tmp
 	);
 
@@ -1601,7 +1610,7 @@ mnt_75 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_35_2,
-	expr => expr_70,
+	expr => expr_76,
 	valid => valid_75_tmp
 	);
 
@@ -1616,7 +1625,7 @@ mnt_76 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_36_2,
-	expr => expr_76,
+	expr => expr_82,
 	valid => valid_76_tmp
 	);
 
@@ -1631,7 +1640,7 @@ mnt_77 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_37_2,
-	expr => expr_78,
+	expr => expr_84,
 	valid => valid_77_tmp
 	);
 
@@ -1769,33 +1778,36 @@ cond_6_2 <= '1' when ante_sig_17='1' and E7='0' else '0';
 --end cond_6_2=fell(E7)
 
 
---process for cond_7_2=rose(E4)
+--process for cond_7_2=rose(run_elected)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
 		ante_sig_18 <= '0';--take care about the initial value
 	else
-		ante_sig_18 <= E4;
+		ante_sig_18 <= run_elected;
 	end if;
 end if;
 end process;
-cond_7_2 <= '1' when ante_sig_18='0' and E4='1' else '0';
---end cond_7_2=rose(E4)
+cond_7_2 <= '1' when ante_sig_18='0' and run_elected='1' else '0';
+--end cond_7_2=rose(run_elected)
 
+sig_21 <= E1 or E3;
+sig_19 <= sig_21 or E5;
+expr_19 <= sig_19 or E7;
 
 --process for cond_8_2=rose(run_elected)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_19 <= '0';--take care about the initial value
+		ante_sig_25 <= '0';--take care about the initial value
 	else
-		ante_sig_19 <= run_elected;
+		ante_sig_25 <= run_elected;
 	end if;
 end if;
 end process;
-cond_8_2 <= '1' when ante_sig_19='0' and run_elected='1' else '0';
+cond_8_2 <= '1' when ante_sig_25='0' and run_elected='1' else '0';
 --end cond_8_2=rose(run_elected)
 
 
@@ -1804,13 +1816,13 @@ process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_20 <= '0';--take care about the initial value
+		ante_sig_26 <= '0';--take care about the initial value
 	else
-		ante_sig_20 <= run_elected;
+		ante_sig_26 <= run_elected;
 	end if;
 end if;
 end process;
-cond_9_2 <= '1' when ante_sig_20='1' and run_elected='0' else '0';
+cond_9_2 <= '1' when ante_sig_26='1' and run_elected='0' else '0';
 --end cond_9_2=fell(run_elected)
 
 
@@ -1819,13 +1831,13 @@ process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_21 <= '0';--take care about the initial value
+		ante_sig_27 <= '0';--take care about the initial value
 	else
-		ante_sig_21 <= call_service;
+		ante_sig_27 <= call_service;
 	end if;
 end if;
 end process;
-cond_10_2 <= '1' when ante_sig_21='0' and call_service='1' else '0';
+cond_10_2 <= '1' when ante_sig_27='0' and call_service='1' else '0';
 --end cond_10_2=rose(call_service)
 
 
@@ -1834,78 +1846,78 @@ process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_22 <= '0';--take care about the initial value
+		ante_sig_28 <= '0';--take care about the initial value
 	else
-		ante_sig_22 <= call_service;
+		ante_sig_28 <= call_service;
 	end if;
 end if;
 end process;
-cond_11_2 <= '1' when ante_sig_22='1' and call_service='0' else '0';
+cond_11_2 <= '1' when ante_sig_28='1' and call_service='0' else '0';
 --end cond_11_2=fell(call_service)
 
-sig_24 <= not(E7);
-sig_23 <= not(E5);
-expr_23 <= sig_23 and sig_24;
+sig_30 <= not(E7);
+sig_29 <= not(E5);
+expr_29 <= sig_29 and sig_30;
 
 --process for cond_12_2=rose(call_context)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_27 <= '0';--take care about the initial value
+		ante_sig_33 <= '0';--take care about the initial value
 	else
-		ante_sig_27 <= call_context;
+		ante_sig_33 <= call_context;
 	end if;
 end if;
 end process;
-cond_12_2 <= '1' when ante_sig_27='0' and call_context='1' else '0';
+cond_12_2 <= '1' when ante_sig_33='0' and call_context='1' else '0';
 --end cond_12_2=rose(call_context)
 
-expr_28 <= E1 or E3;
+expr_34 <= E1 or E3;
 
 --process for cond_13_2=fell(run_elected)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_30 <= '0';--take care about the initial value
+		ante_sig_36 <= '0';--take care about the initial value
 	else
-		ante_sig_30 <= run_elected;
+		ante_sig_36 <= run_elected;
 	end if;
 end if;
 end process;
-cond_13_2 <= '1' when ante_sig_30='1' and run_elected='0' else '0';
+cond_13_2 <= '1' when ante_sig_36='1' and run_elected='0' else '0';
 --end cond_13_2=fell(run_elected)
 
 
---process for cond_16_2=fell(call_handler)
+--process for cond_16_2=rose(call_handler)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_31 <= '0';--take care about the initial value
+		ante_sig_37 <= '0';--take care about the initial value
 	else
-		ante_sig_31 <= call_handler;
+		ante_sig_37 <= call_handler;
 	end if;
 end if;
 end process;
-cond_16_2 <= '1' when ante_sig_31='1' and call_handler='0' else '0';
---end cond_16_2=fell(call_handler)
+cond_16_2 <= '1' when ante_sig_37='0' and call_handler='1' else '0';
+--end cond_16_2=rose(call_handler)
 
 
---process for expr_16_2=fell(call_service)
+--process for cond_16_3=fell(call_handler)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_32 <= '0';--take care about the initial value
+		ante_sig_38 <= '0';--take care about the initial value
 	else
-		ante_sig_32 <= call_service;
+		ante_sig_38 <= call_handler;
 	end if;
 end if;
 end process;
-expr_16_2 <= '1' when ante_sig_32='1' and call_service='0' else '0';
---end expr_16_2=fell(call_service)
+cond_16_3 <= '1' when ante_sig_38='1' and call_handler='0' else '0';
+--end cond_16_3=fell(call_handler)
 
 
 --process for cond_17_2=rose(call_save)
@@ -1913,69 +1925,71 @@ process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_33 <= '0';--take care about the initial value
+		ante_sig_39 <= '0';--take care about the initial value
 	else
-		ante_sig_33 <= call_save;
+		ante_sig_39 <= call_save;
 	end if;
 end if;
 end process;
-cond_17_2 <= '1' when ante_sig_33='0' and call_save='1' else '0';
+cond_17_2 <= '1' when ante_sig_39='0' and call_save='1' else '0';
 --end cond_17_2=rose(call_save)
 
-expr_34 <= E3 and call_context;
-sig_37 <= not(E5);
-sig_36 <= not(E1);
-expr_36 <= sig_36 and sig_37;
+expr_40 <= E3 and call_context;
+sig_43 <= not(E5);
+sig_42 <= not(E1);
+expr_42 <= sig_42 and sig_43;
 
 --process for cond_19_2=fell(activate_task_service)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_40 <= '0';--take care about the initial value
+		ante_sig_46 <= '0';--take care about the initial value
 	else
-		ante_sig_40 <= activate_task_service;
+		ante_sig_46 <= activate_task_service;
 	end if;
 end if;
 end process;
-cond_19_2 <= '1' when ante_sig_40='1' and activate_task_service='0' else '0';
+cond_19_2 <= '1' when ante_sig_46='1' and activate_task_service='0' else '0';
 --end cond_19_2=fell(activate_task_service)
 
-sig_41 <= E0 or E3;
-expr_41 <= sig_41 or E4;
-expr_45 <= E0 or E1;
+sig_47 <= E0 or E3;
+expr_47 <= sig_47 or E4;
+expr_51 <= E0 or E1;
 
 --process for cond_21_2=fell(terminate_task_service)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_47 <= '0';--take care about the initial value
+		ante_sig_53 <= '0';--take care about the initial value
 	else
-		ante_sig_47 <= terminate_task_service;
+		ante_sig_53 <= terminate_task_service;
 	end if;
 end if;
 end process;
-cond_21_2 <= '1' when ante_sig_47='1' and terminate_task_service='0' else '0';
+cond_21_2 <= '1' when ante_sig_53='1' and terminate_task_service='0' else '0';
 --end cond_21_2=fell(terminate_task_service)
 
-expr_48 <= bubble_up or bubble_down;
-expr_50 <= put_new_proc or put_preempted_proc;
-expr_52 <= remove_front_proc or remove_proc;
-expr_54 <= release or activate_task;
-sig_60 <= schedule_from_running or terminate_task_service;
-sig_58 <= sig_60 or chain_task_service;
-sig_56 <= sig_58 or start_scheduling;
-expr_56 <= sig_56 or release;
-sig_64 <= block_s or terminate;
-expr_64 <= sig_64 or schedule_service;
-expr_68 <= terminate_task_service or chain_task_service;
-sig_72 <= activate_task_service or chain_task_service;
-sig_70 <= sig_72 or init_os;
-expr_70 <= sig_70 or action_activate_task;
-expr_76 <= set_event_service or action_set_event;
-sig_80 <= activate_task_service or schedule_service;
-sig_78 <= sig_80 or set_event_service;
-expr_78 <= sig_78 or release_resource_service;
+expr_54 <= bubble_up or bubble_down;
+expr_56 <= put_new_proc or put_preempted_proc;
+expr_58 <= remove_front_proc or remove_proc;
+expr_60 <= release or activate_task;
+sig_66 <= schedule_from_running or terminate_task_service;
+sig_64 <= sig_66 or chain_task_service;
+sig_62 <= sig_64 or start_scheduling;
+expr_62 <= sig_62 or release;
+sig_70 <= block_s or terminate;
+expr_70 <= sig_70 or schedule_service;
+expr_74 <= terminate_task_service or chain_task_service;
+sig_78 <= activate_task_service or chain_task_service;
+sig_76 <= sig_78 or init_os;
+expr_76 <= sig_76 or action_activate_task;
+expr_82 <= set_event_service or action_set_event;
+sig_90 <= activate_task_service or schedule_service;
+sig_88 <= sig_90 or set_event_service;
+sig_86 <= sig_88 or central_interrupt_handler;
+sig_84 <= sig_86 or release_resource_service;
+expr_84 <= sig_84 or counter_tick;
 --trampoline_properties port out affectation
 end architecture behav;

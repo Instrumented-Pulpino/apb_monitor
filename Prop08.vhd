@@ -1,6 +1,6 @@
 --Entity Prop08 for property Prop08
 --Formula is :
---assert  always(rose(E4) -> next[1](run_elected)); 
+--assert  always(rose(run_elected) -> (E1 or E3 or E5 or E7)); 
 
 
 
@@ -17,7 +17,7 @@ entity Prop08 is
 	 reset_n : in std_logic;
 	 cond_7_2 : in std_logic;
 	 pending_7 : out std_logic;
-	 trigger_next_7_3 : out std_logic
+	 trigger_imply_7_2 : out std_logic
 	);
 end entity Prop08;
 --end of entity 
@@ -27,32 +27,12 @@ end entity Prop08;
 architecture mon of Prop08 is
 
 --internal signal
-signal	trigger_imply_7_2, trigger_always_7_1, trigger_init_7_0	: std_logic;
+signal	trigger_always_7_1, trigger_init_7_0	: std_logic;
 
 begin
 
 --pending expression
 	pending_7 <= '0';
-
-	next_7_3 : mnt_next
-	generic map (
-		GATED_CLOCK => 0,
-		OP_TYPE => 0,
-		EDGE =>'1',
-		LEVEL =>'0',
-		NUM_CLK => 1
-	)
-	port map (
-		--clk_en not connected
-		clk_en => '1',
-		clk => clk,
-		reset_n => reset_n,
-		start => trigger_imply_7_2,
-		pending => OPEN,
-		trigger => trigger_next_7_3
-	);
-
-
 
 	imply_7_2 : mnt_impl	--no generic port
 	port map (

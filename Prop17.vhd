@@ -1,6 +1,6 @@
 --Entity Prop17 for property Prop17
 --Formula is :
---assert  always(fell(call_service) before fell(call_handler)); 
+--assert  always(rose(call_handler) -> (call_service before fell(call_handler))); 
 
 
 
@@ -16,9 +16,10 @@ entity Prop17 is
 	 clk : in std_logic;
 	 reset_n : in std_logic;
 	 cond_16_2 : in std_logic;
-	 expr_16_2 : in std_logic;
+	 cond_16_3 : in std_logic;
+	 expr_16_3 : in std_logic;
 	 pending_16 : out std_logic;
-	 trigger_before_16_2 : out std_logic
+	 trigger_before_16_3 : out std_logic
 	);
 end entity Prop17;
 --end of entity 
@@ -28,14 +29,14 @@ end entity Prop17;
 architecture mon of Prop17 is
 
 --internal signal
-signal	trigger_always_16_1, trigger_init_16_0	: std_logic;
+signal	trigger_imply_16_2, trigger_always_16_1, trigger_init_16_0	: std_logic;
 
 begin
 
 --pending expression
 	pending_16 <= '0';
 
-	before_16_2 : mnt_before
+	before_16_3 : mnt_before
 	generic map (
 		EDGE => '1',
 		LEVEL =>'0',
@@ -48,11 +49,20 @@ begin
 		reset_n => reset_n,
 		--clk_en not connected
 		clk_en => '1',
+		start => trigger_imply_16_2,
+		cond => cond_16_3,
+		expr => expr_16_3,
+		pending => OPEN,
+		trigger => trigger_before_16_3
+	);
+
+
+
+	imply_16_2 : mnt_impl	--no generic port
+	port map (
 		start => trigger_always_16_1,
 		cond => cond_16_2,
-		expr => expr_16_2,
-		pending => OPEN,
-		trigger => trigger_before_16_2
+		trigger => trigger_imply_16_2
 	);
 
 

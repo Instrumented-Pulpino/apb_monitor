@@ -33,8 +33,8 @@ architecture architecture_apb_monitor of apb_monitor is
   constant ADDR_reg_tpl_kern_electedID         : std_logic_vector(31 downto 0) := X"1A108014";
   constant ADDR_tpl_kern_need_switch           : std_logic_vector(31 downto 0) := X"1A108018";
   constant ADDR_tpl_kern_need_schedule         : std_logic_vector(31 downto 0) := X"1A10801C";
-  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108020";
-  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108024";
+  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108020";
+  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108024";
   constant ADDR_reg_return                     : std_logic_vector(31 downto 0) := X"1A108028";
   constant ADDR_reg_config                     : std_logic_vector(31 downto 0) := X"1A10802C";
   constant ADDR_reg_return_2                   : std_logic_vector(31 downto 0) := X"1A108030";
@@ -96,6 +96,8 @@ architecture architecture_apb_monitor of apb_monitor is
       action_activate_task      : in  std_logic;
       action_set_event          : in  std_logic;
       call_save                 : in  std_logic;
+      central_interrupt_handler : in  std_logic;
+      counter_tick              : in  std_logic;
       activate_task_service     : in  std_logic;
       terminate_task_service    : in  std_logic;
       chain_task_service        : in  std_logic;
@@ -185,6 +187,8 @@ architecture architecture_apb_monitor of apb_monitor is
   signal start_scheduling          : std_logic;
   signal action_activate_task      : std_logic;
   signal action_set_event          : std_logic;
+  signal central_interrupt_handler : std_logic;
+  signal counter_tick              : std_logic;
   signal call_save                 : std_logic;
   signal activate_task_service     : std_logic;
   signal terminate_task_service    : std_logic;
@@ -256,7 +260,9 @@ begin
   start_scheduling          <= reg_OS_instru_kernel_functions(23);
   action_activate_task      <= reg_OS_instru_kernel_functions(24);
   action_set_event          <= reg_OS_instru_kernel_functions(25);
-  call_save                 <= reg_OS_instru_kernel_functions(26);
+  central_interrupt_handler <= reg_OS_instru_kernel_functions(26);
+  counter_tick              <= reg_OS_instru_kernel_functions(27);
+  call_save                 <= reg_OS_instru_kernel_functions(28);
   reset                     <= reg_config(0);
   enable_IT                 <= reg_config(1);
 
@@ -388,6 +394,8 @@ begin
       action_activate_task      => action_activate_task,
       action_set_event          => action_set_event,
       call_save                 => call_save,
+      central_interrupt_handler => central_interrupt_handler,
+      counter_tick              => counter_tick,
       activate_task_service     => activate_task_service,
       terminate_task_service    => terminate_task_service,
       chain_task_service        => chain_task_service,
@@ -446,7 +454,7 @@ begin
 
   -- psl property Prop16 is always(call_context -> call_handler);
 
-  -- psl property Prop17 is always(rose(call_handler) -> (rose(call_service) before fell(call_handler)) and (fell(call_service) before fell(call_handler)));
+  -- psl property Prop17 is always(rose(call_handler) -> (call_service before fell(call_handler)));
 
   -- psl property Prop18 is always(rose(call_save) -> (E3 and call_context));
 
@@ -488,7 +496,7 @@ begin
 
   -- psl property Prop37 is always(set_event -> (set_event_service or action_set_event));
 
-  -- psl property Prop38 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or release_resource_service));
+  -- psl property Prop38 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick));
 
   -- psl property Prop39 is always(start_scheduling -> start_os_service);
 
@@ -534,6 +542,5 @@ begin
   -- psl assert Prop38;
   -- psl assert Prop39;
   -- psl assert Prop40;
-
 
 end architecture_apb_monitor;
