@@ -203,6 +203,9 @@ architecture architecture_apb_monitor of apb_monitor is
 
   component services is
     port (
+      clk                      : in  std_logic;
+      reset_n                  : in  std_logic;
+      trigger                  : in  std_logic;
       reg_OS_instru_service    : in  std_logic_vector(31 downto 0);
       activate_task_service    : out std_logic;
       terminate_task_service   : out std_logic;
@@ -213,6 +216,7 @@ architecture architecture_apb_monitor of apb_monitor is
       release_resource_service : out std_logic;
       start_os_service         : out std_logic);
   end component services;
+  signal trigger : std_logic;
 
   -- Monitor evaluation
   signal valid : std_logic;
@@ -283,7 +287,11 @@ begin
       reg_config                     <= (others => '0');
       reg_return                     <= (others => '0');
       reg_return_2                   <= (others => '0');
+      trigger                        <= '0';
     elsif HCLK'event and HCLK = '1' then  -- rising clock edge
+      -- Default assignment
+      trigger <= '0';
+
       if (PSEL = '1' and PENABLE = '1') then
 
         -- Reading APB bus (CPU to Fabric)
@@ -297,7 +305,7 @@ begin
             when ADDR_reg_tpl_kern_electedID         => reg_tpl_kern_electedID         <= PWDATA;
             when ADDR_tpl_kern_need_switch           => tpl_kern_need_switch           <= PWDATA(1 downto 0);
             when ADDR_tpl_kern_need_schedule         => tpl_kern_need_schedule         <= PWDATA(0);
-            when ADDR_reg_OS_instru_service          => reg_OS_instru_service          <= PWDATA;
+            when ADDR_reg_OS_instru_service          => reg_OS_instru_service          <= PWDATA; trigger <= '1';
             when ADDR_reg_OS_instru_kernel_functions => reg_OS_instru_kernel_functions <= PWDATA xor reg_OS_instru_kernel_functions;
             when ADDR_reg_config                     => reg_config                     <= PWDATA;
             when others                              => null;
@@ -408,8 +416,13 @@ begin
       enable_IT                 => enable_IT,
       valid                     => valid);
 
+  assert (HRESETn = '0' or valid = '1') report "Valid false !" severity error;
+
   services_identifier : services
     port map (
+      clk                      => HCLK,
+      reset_n                  => HRESETn,
+      trigger                  => trigger,
       reg_OS_instru_service    => reg_OS_instru_service,
       activate_task_service    => activate_task_service,
       terminate_task_service   => terminate_task_service,
