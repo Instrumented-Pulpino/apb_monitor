@@ -19,7 +19,9 @@ entity apb_monitor is
 
     -- Reset, Clock
     HRESETn : in std_logic;
-    HCLK    : in std_logic
+    HCLK    : in std_logic;
+
+    monitor_valid : out std_logic
     );
 end apb_monitor;
 
@@ -219,12 +221,15 @@ architecture architecture_apb_monitor of apb_monitor is
   signal trigger : std_logic;
 
   -- Monitor evaluation
-  signal valid : std_logic;
+  signal valid              : std_logic;
+  signal monitor_valid_i    : std_logic;
+  signal next_monitor_valid : std_logic;
 begin
 
   -- Default affectations
-  PSLVERR <= '0';
-  PREADY  <= '1';
+  PSLVERR       <= '0';
+  PREADY        <= '1';
+  monitor_valid <= monitor_valid_i;
 
   -- Kernel state
   kernel_state_bits <= tpl_kern_need_schedule & tpl_kern_need_switch;
@@ -288,9 +293,11 @@ begin
       reg_return                     <= (others => '0');
       reg_return_2                   <= (others => '0');
       trigger                        <= '0';
+      monitor_valid_i                <= '0';
     elsif HCLK'event and HCLK = '1' then  -- rising clock edge
       -- Default assignment
-      trigger <= '0';
+      trigger         <= '0';
+      monitor_valid_i <= next_monitor_valid;
 
       if (PSEL = '1' and PENABLE = '1') then
 
@@ -317,7 +324,7 @@ begin
   end process sequential_process;
 
   combinational_process : process (PADDR, PENABLE, PSEL, PWRITE,
-                                   kernel_state_bits,
+                                   kernel_state_bits, monitor_valid_i,
                                    reg_OS_instru_kernel_functions,
                                    reg_OS_instru_service, reg_config,
                                    reg_return, reg_return_2,
@@ -328,7 +335,7 @@ begin
                                    reg_tpl_kern_selected,
                                    reg_tpl_kern_srunning,
                                    tpl_kern_need_schedule,
-                                   tpl_kern_need_switch) is
+                                   tpl_kern_need_switch, valid) is
   begin  -- process combinational_process
     -- Writing APB bus (Fabric to CPU)
     if (PWRITE = '0' and PSEL = '1' and PENABLE = '1') then
@@ -360,6 +367,11 @@ begin
       when "101"  => kernel_state <= "00100000";
       when "110"  => kernel_state <= "01000000";
       when others => kernel_state <= "10000000";
+    end case;
+
+    case monitor_valid_i is
+      when '0'    => next_monitor_valid <= not valid;
+      when others => next_monitor_valid <= '1';
     end case;
   end process combinational_process;
 
