@@ -428,7 +428,7 @@ begin
       enable_IT                 => enable_IT,
       valid                     => valid);
 
-  assert (HRESETn = '0' or valid = '1') report "Valid false !" severity error;
+  assert (HRESETn /= '1' or valid = '1') report "Valid false !" severity failure;
 
   services_identifier : services
     port map (
@@ -467,7 +467,7 @@ begin
 
   -- psl property Prop10 is always(fell(run_elected) -> call_handler);
 
-  -- psl property Prop11 is always(rose(call_service) -> E0);
+  -- psl property Prop11 is always(fell(call_handler) -> E0 or E4);
 
   -- psl property Prop12 is always(fell(call_service) -> (not(E5) and not(E7)));
 
