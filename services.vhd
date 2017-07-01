@@ -5,33 +5,37 @@ use ieee.numeric_std.all;
 entity services is
 
   port (
-    clk                      : in  std_logic;
-    reset_n                  : in  std_logic;
-    trigger                  : in  std_logic;
-    reg_OS_instru_service    : in  std_logic_vector(31 downto 0);
-    activate_task_service    : out std_logic;
-    terminate_task_service   : out std_logic;
-    chain_task_service       : out std_logic;
-    schedule_service         : out std_logic;
-    set_event_service        : out std_logic;
-    wait_event_service       : out std_logic;
-    release_resource_service : out std_logic;
-    start_os_service         : out std_logic
+    clk                           : in  std_logic;
+    reset_n                       : in  std_logic;
+    trigger                       : in  std_logic;
+    reg_OS_instru_service         : in  std_logic_vector(31 downto 0);
+    activate_task_service         : out std_logic;
+    terminate_task_service        : out std_logic;
+    chain_task_service            : out std_logic;
+    schedule_service              : out std_logic;
+    set_event_service             : out std_logic;
+    wait_event_service            : out std_logic;
+    release_resource_service      : out std_logic;
+    start_os_service              : out std_logic;
+    terminate_isr2_service        : out std_logic;
+    terminate_application_service : out std_logic
     );
 
 end services;
 
 architecture behav of services is
 
-  constant ACTIVATE_TASK    : unsigned := to_unsigned(66, 8);
-  constant TERMINATE_TASK   : unsigned := to_unsigned(67, 8);
-  constant CHAIN_TASK       : unsigned := to_unsigned(68, 8);
-  constant SCHEDULE         : unsigned := to_unsigned(69, 8);
-  constant SET_EVENT        : unsigned := to_unsigned(14, 8);
-  constant WAIT_EVENT       : unsigned := to_unsigned(17, 8);
-  constant RELEASE_RESOURCE : unsigned := to_unsigned(48, 8);
-  constant START_OS         : unsigned := to_unsigned(45, 8);
-  constant NO_SERVICE       : unsigned := x"FF";
+  constant ACTIVATE_TASK         : unsigned := to_unsigned(66, 8);
+  constant TERMINATE_TASK        : unsigned := to_unsigned(67, 8);
+  constant CHAIN_TASK            : unsigned := to_unsigned(68, 8);
+  constant SCHEDULE              : unsigned := to_unsigned(69, 8);
+  constant SET_EVENT             : unsigned := to_unsigned(14, 8);
+  constant WAIT_EVENT            : unsigned := to_unsigned(17, 8);
+  constant RELEASE_RESOURCE      : unsigned := to_unsigned(48, 8);
+  constant START_OS              : unsigned := to_unsigned(45, 8);
+  constant TERMINATE_ISR2        : unsigned := to_unsigned(27, 8);
+  constant TERMINATE_APPLICATION : unsigned := to_unsigned(6, 8);
+  constant NO_SERVICE            : unsigned := x"FF";
 
   signal pile_service      : std_logic_vector(31 downto 0);
   signal next_pile_service : std_logic_vector(31 downto 0);
@@ -104,6 +108,20 @@ begin  -- architecture behav
                       pile_service_3_u = START_OS or
                       pile_service_4_u = START_OS
                       else '0';
+
+  terminate_isr2_service <= '1' when
+                            pile_service_1_u = TERMINATE_ISR2 or
+                            pile_service_2_u = TERMINATE_ISR2 or
+                            pile_service_3_u = TERMINATE_ISR2 or
+                            pile_service_4_u = TERMINATE_ISR2
+                            else '0';
+
+  terminate_application_service <= '1' when
+                                   pile_service_1_u = TERMINATE_APPLICATION or
+                                   pile_service_2_u = TERMINATE_APPLICATION or
+                                   pile_service_3_u = TERMINATE_APPLICATION or
+                                   pile_service_4_u = TERMINATE_APPLICATION
+                                   else '0';
 
   sequential_process : process (trigger, reset_n) is
   begin  -- process sequential_process

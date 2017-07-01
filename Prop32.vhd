@@ -1,6 +1,6 @@
 --Entity Prop32 for property Prop32
 --Formula is :
---assert  always(start -> (schedule_from_running or terminate_task_service or chain_task_service or start_scheduling or release)); 
+--assert  always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service)); 
 
 
 

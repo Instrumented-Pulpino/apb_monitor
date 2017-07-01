@@ -47,6 +47,7 @@ entity trampoline_properties is
 	action_set_event : in std_logic;
 	call_save : in std_logic;
 	central_interrupt_handler : in std_logic;
+	activate_isr2 : in std_logic;
 	counter_tick : in std_logic;
 	activate_task_service : in std_logic;
 	terminate_task_service : in std_logic;
@@ -56,6 +57,8 @@ entity trampoline_properties is
 	wait_event_service : in std_logic;
 	release_resource_service : in std_logic;
 	start_os_service : in std_logic;
+	terminate_isr2_service : in std_logic;
+	terminate_application_service : in std_logic;
 	reset : in std_logic;
 	enable_IT : in std_logic;
 	pending : out std_logic;
@@ -630,8 +633,10 @@ signal expr_49 : std_logic;
 signal pending_20_tmp : std_logic;
 signal trigger_imply_20_2 : std_logic;
 signal valid_60_tmp : std_logic;
+signal sig_55 : std_logic;
+signal sig_53 : std_logic;
 signal expr_53 : std_logic;
-signal ante_sig_55 : std_logic;
+signal ante_sig_59 : std_logic;
 signal cond_21_2 : std_logic;
 signal pending_21_tmp : std_logic;
 signal trigger_imply_21_2 : std_logic;
@@ -639,22 +644,23 @@ signal valid_61_tmp : std_logic;
 signal pending_22_tmp : std_logic;
 signal trigger_imply_22_2 : std_logic;
 signal valid_62_tmp : std_logic;
-signal expr_56 : std_logic;
+signal expr_60 : std_logic;
 signal pending_23_tmp : std_logic;
 signal trigger_imply_23_2 : std_logic;
 signal valid_63_tmp : std_logic;
-signal expr_58 : std_logic;
+signal expr_62 : std_logic;
 signal pending_24_tmp : std_logic;
 signal trigger_imply_24_2 : std_logic;
 signal valid_64_tmp : std_logic;
-signal expr_60 : std_logic;
+signal expr_64 : std_logic;
 signal pending_25_tmp : std_logic;
 signal trigger_imply_25_2 : std_logic;
 signal valid_65_tmp : std_logic;
 signal pending_26_tmp : std_logic;
 signal trigger_imply_26_2 : std_logic;
 signal valid_66_tmp : std_logic;
-signal expr_62 : std_logic;
+signal sig_66 : std_logic;
+signal expr_66 : std_logic;
 signal pending_27_tmp : std_logic;
 signal trigger_imply_27_2 : std_logic;
 signal valid_67_tmp : std_logic;
@@ -670,40 +676,47 @@ signal valid_70_tmp : std_logic;
 signal pending_31_tmp : std_logic;
 signal trigger_imply_31_2 : std_logic;
 signal valid_71_tmp : std_logic;
-signal sig_68 : std_logic;
-signal sig_66 : std_logic;
-signal sig_64 : std_logic;
-signal expr_64 : std_logic;
+signal sig_80 : std_logic;
+signal sig_78 : std_logic;
+signal sig_76 : std_logic;
+signal sig_74 : std_logic;
+signal sig_72 : std_logic;
+signal sig_70 : std_logic;
+signal expr_70 : std_logic;
 signal pending_32_tmp : std_logic;
 signal trigger_imply_32_2 : std_logic;
 signal valid_72_tmp : std_logic;
-signal sig_72 : std_logic;
-signal expr_72 : std_logic;
+signal sig_86 : std_logic;
+signal sig_84 : std_logic;
+signal expr_84 : std_logic;
 signal pending_33_tmp : std_logic;
 signal trigger_imply_33_2 : std_logic;
 signal valid_73_tmp : std_logic;
 signal pending_34_tmp : std_logic;
 signal trigger_imply_34_2 : std_logic;
 signal valid_74_tmp : std_logic;
-signal expr_76 : std_logic;
+signal sig_92 : std_logic;
+signal sig_90 : std_logic;
+signal expr_90 : std_logic;
 signal pending_35_tmp : std_logic;
 signal trigger_imply_35_2 : std_logic;
 signal valid_75_tmp : std_logic;
-signal sig_80 : std_logic;
-signal sig_78 : std_logic;
-signal expr_78 : std_logic;
+signal sig_100 : std_logic;
+signal sig_98 : std_logic;
+signal sig_96 : std_logic;
+signal expr_96 : std_logic;
 signal pending_36_tmp : std_logic;
 signal trigger_imply_36_2 : std_logic;
 signal valid_76_tmp : std_logic;
-signal expr_84 : std_logic;
+signal expr_104 : std_logic;
 signal pending_37_tmp : std_logic;
 signal trigger_imply_37_2 : std_logic;
 signal valid_77_tmp : std_logic;
-signal sig_92 : std_logic;
-signal sig_90 : std_logic;
-signal sig_88 : std_logic;
-signal sig_86 : std_logic;
-signal expr_86 : std_logic;
+signal sig_112 : std_logic;
+signal sig_110 : std_logic;
+signal sig_108 : std_logic;
+signal sig_106 : std_logic;
+signal expr_106 : std_logic;
 signal pending_38_tmp : std_logic;
 signal trigger_imply_38_2 : std_logic;
 signal valid_78_tmp : std_logic;
@@ -1416,7 +1429,7 @@ mnt_62 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_22_2,
-	expr => expr_56,
+	expr => expr_60,
 	valid => valid_62_tmp
 	);
 
@@ -1431,7 +1444,7 @@ mnt_63 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_23_2,
-	expr => expr_58,
+	expr => expr_62,
 	valid => valid_63_tmp
 	);
 
@@ -1446,7 +1459,7 @@ mnt_64 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_24_2,
-	expr => expr_60,
+	expr => expr_64,
 	valid => valid_64_tmp
 	);
 
@@ -1476,7 +1489,7 @@ mnt_66 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_26_2,
-	expr => expr_62,
+	expr => expr_66,
 	valid => valid_66_tmp
 	);
 
@@ -1551,7 +1564,7 @@ mnt_71 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_31_2,
-	expr => expr_64,
+	expr => expr_70,
 	valid => valid_71_tmp
 	);
 
@@ -1566,7 +1579,7 @@ mnt_72 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_32_2,
-	expr => expr_72,
+	expr => expr_84,
 	valid => valid_72_tmp
 	);
 
@@ -1596,7 +1609,7 @@ mnt_74 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_34_2,
-	expr => expr_76,
+	expr => expr_90,
 	valid => valid_74_tmp
 	);
 
@@ -1611,7 +1624,7 @@ mnt_75 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_35_2,
-	expr => expr_78,
+	expr => expr_96,
 	valid => valid_75_tmp
 	);
 
@@ -1626,7 +1639,7 @@ mnt_76 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_36_2,
-	expr => expr_84,
+	expr => expr_104,
 	valid => valid_76_tmp
 	);
 
@@ -1641,7 +1654,7 @@ mnt_77 : mnt_monitor
 	reset_n => reset_n,
 	clk_en => '1',
 	start => trigger_imply_37_2,
-	expr => expr_86,
+	expr => expr_106,
 	valid => valid_77_tmp
 	);
 
@@ -1957,41 +1970,51 @@ cond_19_2 <= '1' when ante_sig_48='1' and activate_task_service='0' else '0';
 
 sig_49 <= E0 or E3;
 expr_49 <= sig_49 or E4;
-expr_53 <= E0 or E1;
+sig_55 <= E0 or E1;
+sig_53 <= sig_55 or E4;
+expr_53 <= sig_53 or E5;
 
 --process for cond_21_2=fell(terminate_task_service)
 process(clk,reset_n)
 begin
 if(clk'event and clk='1') then 
 	if(reset_n='0') then
-		ante_sig_55 <= '0';--take care about the initial value
+		ante_sig_59 <= '0';--take care about the initial value
 	else
-		ante_sig_55 <= terminate_task_service;
+		ante_sig_59 <= terminate_task_service;
 	end if;
 end if;
 end process;
-cond_21_2 <= '1' when ante_sig_55='1' and terminate_task_service='0' else '0';
+cond_21_2 <= '1' when ante_sig_59='1' and terminate_task_service='0' else '0';
 --end cond_21_2=fell(terminate_task_service)
 
-expr_56 <= bubble_up or bubble_down;
-expr_58 <= put_new_proc or put_preempted_proc;
-expr_60 <= remove_front_proc or remove_proc;
-expr_62 <= release or activate_task;
-sig_68 <= schedule_from_running or terminate_task_service;
-sig_66 <= sig_68 or chain_task_service;
-sig_64 <= sig_66 or start_scheduling;
-expr_64 <= sig_64 or release;
-sig_72 <= block_s or terminate;
-expr_72 <= sig_72 or schedule_service;
-expr_76 <= terminate_task_service or chain_task_service;
-sig_80 <= activate_task_service or chain_task_service;
-sig_78 <= sig_80 or init_os;
-expr_78 <= sig_78 or action_activate_task;
-expr_84 <= set_event_service or action_set_event;
-sig_92 <= activate_task_service or schedule_service;
-sig_90 <= sig_92 or set_event_service;
-sig_88 <= sig_90 or central_interrupt_handler;
-sig_86 <= sig_88 or release_resource_service;
-expr_86 <= sig_86 or counter_tick;
+expr_60 <= bubble_up or bubble_down;
+expr_62 <= put_new_proc or put_preempted_proc;
+expr_64 <= remove_front_proc or remove_proc;
+sig_66 <= release or activate_task;
+expr_66 <= sig_66 or activate_isr2;
+sig_80 <= schedule_from_running or terminate_task_service;
+sig_78 <= sig_80 or terminate_isr2_service;
+sig_76 <= sig_78 or chain_task_service;
+sig_74 <= sig_76 or block_s;
+sig_72 <= sig_74 or start_scheduling;
+sig_70 <= sig_72 or release;
+expr_70 <= sig_70 or terminate_application_service;
+sig_86 <= block_s or terminate;
+sig_84 <= sig_86 or schedule_service;
+expr_84 <= sig_84 or terminate_application_service;
+sig_92 <= terminate_task_service or chain_task_service;
+sig_90 <= sig_92 or terminate_isr2_service;
+expr_90 <= sig_90 or terminate_application_service;
+sig_100 <= activate_task_service or chain_task_service;
+sig_98 <= sig_100 or init_os;
+sig_96 <= sig_98 or action_activate_task;
+expr_96 <= sig_96 or terminate_application_service;
+expr_104 <= set_event_service or action_set_event;
+sig_112 <= activate_task_service or schedule_service;
+sig_110 <= sig_112 or set_event_service;
+sig_108 <= sig_110 or central_interrupt_handler;
+sig_106 <= sig_108 or release_resource_service;
+expr_106 <= sig_106 or counter_tick;
 --trampoline_properties port out affectation
 end architecture behav;

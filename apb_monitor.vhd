@@ -61,162 +61,170 @@ architecture architecture_apb_monitor of apb_monitor is
 
   component trampoline_properties is
     port (
-      clk                       : in  std_logic;
-      reset_n                   : in  std_logic;
-      E0                        : in  std_logic;
-      E1                        : in  std_logic;
-      E2                        : in  std_logic;
-      E3                        : in  std_logic;
-      E4                        : in  std_logic;
-      E5                        : in  std_logic;
-      E6                        : in  std_logic;
-      E7                        : in  std_logic;
-      call_handler              : in  std_logic;
-      call_service              : in  std_logic;
-      call_context              : in  std_logic;
-      compare_entries           : in  std_logic;
-      bubble_up                 : in  std_logic;
-      bubble_down               : in  std_logic;
-      put_new_proc              : in  std_logic;
-      put_preempted_proc        : in  std_logic;
-      remove_front_proc         : in  std_logic;
-      get_internal_resource     : in  std_logic;
-      release_internal_resource : in  std_logic;
-      preempt                   : in  std_logic;
-      run_elected               : in  std_logic;
-      start                     : in  std_logic;
-      schedule_from_running     : in  std_logic;
-      terminate                 : in  std_logic;
-      block_s                   : in  std_logic;
-      activate_task             : in  std_logic;
-      release                   : in  std_logic;
-      set_event                 : in  std_logic;
-      init_proc                 : in  std_logic;
-      init_os                   : in  std_logic;
-      remove_proc               : in  std_logic;
-      start_scheduling          : in  std_logic;
-      action_activate_task      : in  std_logic;
-      action_set_event          : in  std_logic;
-      call_save                 : in  std_logic;
-      central_interrupt_handler : in  std_logic;
-      counter_tick              : in  std_logic;
-      activate_task_service     : in  std_logic;
-      terminate_task_service    : in  std_logic;
-      chain_task_service        : in  std_logic;
-      schedule_service          : in  std_logic;
-      set_event_service         : in  std_logic;
-      wait_event_service        : in  std_logic;
-      release_resource_service  : in  std_logic;
-      start_os_service          : in  std_logic;
-      reset                     : in  std_logic;
-      enable_IT                 : in  std_logic;
-      pending                   : out std_logic;
-      valid                     : out std_logic;
-      valid_40_Prop01           : out std_logic;
-      valid_41_Prop02           : out std_logic;
-      valid_42_Prop03           : out std_logic;
-      valid_43_Prop04           : out std_logic;
-      valid_44_Prop05           : out std_logic;
-      valid_45_Prop06           : out std_logic;
-      valid_46_Prop07           : out std_logic;
-      valid_47_Prop08           : out std_logic;
-      valid_48_Prop09           : out std_logic;
-      valid_49_Prop10           : out std_logic;
-      valid_50_Prop11           : out std_logic;
-      valid_51_Prop12           : out std_logic;
-      valid_52_Prop13           : out std_logic;
-      valid_53_Prop14           : out std_logic;
-      valid_54_Prop15           : out std_logic;
-      valid_55_Prop16           : out std_logic;
-      valid_56_Prop17           : out std_logic;
-      valid_57_Prop18           : out std_logic;
-      valid_58_Prop19           : out std_logic;
-      valid_59_Prop20           : out std_logic;
-      valid_60_Prop21           : out std_logic;
-      valid_61_Prop22           : out std_logic;
-      valid_62_Prop23           : out std_logic;
-      valid_63_Prop24           : out std_logic;
-      valid_64_Prop25           : out std_logic;
-      valid_65_Prop26           : out std_logic;
-      valid_66_Prop27           : out std_logic;
-      valid_67_Prop28           : out std_logic;
-      valid_68_Prop29           : out std_logic;
-      valid_69_Prop30           : out std_logic;
-      valid_70_Prop31           : out std_logic;
-      valid_71_Prop32           : out std_logic;
-      valid_72_Prop33           : out std_logic;
-      valid_73_Prop34           : out std_logic;
-      valid_74_Prop35           : out std_logic;
-      valid_75_Prop36           : out std_logic;
-      valid_76_Prop37           : out std_logic;
-      valid_77_Prop38           : out std_logic;
-      valid_78_Prop39           : out std_logic;
-      valid_79_Prop40           : out std_logic);
+      clk                           : in  std_logic;
+      reset_n                       : in  std_logic;
+      E0                            : in  std_logic;
+      E1                            : in  std_logic;
+      E2                            : in  std_logic;
+      E3                            : in  std_logic;
+      E4                            : in  std_logic;
+      E5                            : in  std_logic;
+      E6                            : in  std_logic;
+      E7                            : in  std_logic;
+      call_handler                  : in  std_logic;
+      call_service                  : in  std_logic;
+      call_context                  : in  std_logic;
+      compare_entries               : in  std_logic;
+      bubble_up                     : in  std_logic;
+      bubble_down                   : in  std_logic;
+      put_new_proc                  : in  std_logic;
+      put_preempted_proc            : in  std_logic;
+      remove_front_proc             : in  std_logic;
+      get_internal_resource         : in  std_logic;
+      release_internal_resource     : in  std_logic;
+      preempt                       : in  std_logic;
+      run_elected                   : in  std_logic;
+      start                         : in  std_logic;
+      schedule_from_running         : in  std_logic;
+      terminate                     : in  std_logic;
+      block_s                       : in  std_logic;
+      activate_task                 : in  std_logic;
+      release                       : in  std_logic;
+      set_event                     : in  std_logic;
+      init_proc                     : in  std_logic;
+      init_os                       : in  std_logic;
+      remove_proc                   : in  std_logic;
+      start_scheduling              : in  std_logic;
+      action_activate_task          : in  std_logic;
+      action_set_event              : in  std_logic;
+      call_save                     : in  std_logic;
+      central_interrupt_handler     : in  std_logic;
+      activate_isr2                 : in  std_logic;
+      counter_tick                  : in  std_logic;
+      activate_task_service         : in  std_logic;
+      terminate_task_service        : in  std_logic;
+      chain_task_service            : in  std_logic;
+      schedule_service              : in  std_logic;
+      set_event_service             : in  std_logic;
+      wait_event_service            : in  std_logic;
+      release_resource_service      : in  std_logic;
+      start_os_service              : in  std_logic;
+      terminate_isr2_service        : in  std_logic;
+      terminate_application_service : in  std_logic;
+      reset                         : in  std_logic;
+      enable_IT                     : in  std_logic;
+      pending                       : out std_logic;
+      valid                         : out std_logic;
+      valid_40_Prop01               : out std_logic;
+      valid_41_Prop02               : out std_logic;
+      valid_42_Prop03               : out std_logic;
+      valid_43_Prop04               : out std_logic;
+      valid_44_Prop05               : out std_logic;
+      valid_45_Prop06               : out std_logic;
+      valid_46_Prop07               : out std_logic;
+      valid_47_Prop08               : out std_logic;
+      valid_48_Prop09               : out std_logic;
+      valid_49_Prop10               : out std_logic;
+      valid_50_Prop11               : out std_logic;
+      valid_51_Prop12               : out std_logic;
+      valid_52_Prop13               : out std_logic;
+      valid_53_Prop14               : out std_logic;
+      valid_54_Prop15               : out std_logic;
+      valid_55_Prop16               : out std_logic;
+      valid_56_Prop17               : out std_logic;
+      valid_57_Prop18               : out std_logic;
+      valid_58_Prop19               : out std_logic;
+      valid_59_Prop20               : out std_logic;
+      valid_60_Prop21               : out std_logic;
+      valid_61_Prop22               : out std_logic;
+      valid_62_Prop23               : out std_logic;
+      valid_63_Prop24               : out std_logic;
+      valid_64_Prop25               : out std_logic;
+      valid_65_Prop26               : out std_logic;
+      valid_66_Prop27               : out std_logic;
+      valid_67_Prop28               : out std_logic;
+      valid_68_Prop29               : out std_logic;
+      valid_69_Prop30               : out std_logic;
+      valid_70_Prop31               : out std_logic;
+      valid_71_Prop32               : out std_logic;
+      valid_72_Prop33               : out std_logic;
+      valid_73_Prop34               : out std_logic;
+      valid_74_Prop35               : out std_logic;
+      valid_75_Prop36               : out std_logic;
+      valid_76_Prop37               : out std_logic;
+      valid_77_Prop38               : out std_logic;
+      valid_78_Prop39               : out std_logic;
+      valid_79_Prop40               : out std_logic);
   end component trampoline_properties;
 
   -- Atomics
-  signal E0                        : std_logic;
-  signal E1                        : std_logic;
-  signal E2                        : std_logic;
-  signal E3                        : std_logic;
-  signal E4                        : std_logic;
-  signal E5                        : std_logic;
-  signal E6                        : std_logic;
-  signal E7                        : std_logic;
-  signal call_handler              : std_logic;
-  signal call_service              : std_logic;
-  signal call_context              : std_logic;
-  signal compare_entries           : std_logic;
-  signal bubble_up                 : std_logic;
-  signal bubble_down               : std_logic;
-  signal put_new_proc              : std_logic;
-  signal put_preempted_proc        : std_logic;
-  signal remove_front_proc         : std_logic;
-  signal get_internal_resource     : std_logic;
-  signal release_internal_resource : std_logic;
-  signal preempt                   : std_logic;
-  signal run_elected               : std_logic;
-  signal start                     : std_logic;
-  signal schedule_from_running     : std_logic;
-  signal terminate                 : std_logic;
-  signal block_s                   : std_logic;
-  signal activate_task             : std_logic;
-  signal release                   : std_logic;
-  signal set_event                 : std_logic;
-  signal init_proc                 : std_logic;
-  signal init_os                   : std_logic;
-  signal remove_proc               : std_logic;
-  signal start_scheduling          : std_logic;
-  signal action_activate_task      : std_logic;
-  signal action_set_event          : std_logic;
-  signal central_interrupt_handler : std_logic;
-  signal counter_tick              : std_logic;
-  signal call_save                 : std_logic;
-  signal activate_task_service     : std_logic;
-  signal terminate_task_service    : std_logic;
-  signal chain_task_service        : std_logic;
-  signal schedule_service          : std_logic;
-  signal set_event_service         : std_logic;
-  signal wait_event_service        : std_logic;
-  signal release_resource_service  : std_logic;
-  signal start_os_service          : std_logic;
-  signal reset                     : std_logic;
-  signal enable_IT                 : std_logic;
+  signal E0                            : std_logic;
+  signal E1                            : std_logic;
+  signal E2                            : std_logic;
+  signal E3                            : std_logic;
+  signal E4                            : std_logic;
+  signal E5                            : std_logic;
+  signal E6                            : std_logic;
+  signal E7                            : std_logic;
+  signal call_handler                  : std_logic;
+  signal call_service                  : std_logic;
+  signal call_context                  : std_logic;
+  signal compare_entries               : std_logic;
+  signal bubble_up                     : std_logic;
+  signal bubble_down                   : std_logic;
+  signal put_new_proc                  : std_logic;
+  signal put_preempted_proc            : std_logic;
+  signal remove_front_proc             : std_logic;
+  signal get_internal_resource         : std_logic;
+  signal release_internal_resource     : std_logic;
+  signal preempt                       : std_logic;
+  signal run_elected                   : std_logic;
+  signal start                         : std_logic;
+  signal schedule_from_running         : std_logic;
+  signal terminate                     : std_logic;
+  signal block_s                       : std_logic;
+  signal activate_task                 : std_logic;
+  signal release                       : std_logic;
+  signal set_event                     : std_logic;
+  signal init_proc                     : std_logic;
+  signal init_os                       : std_logic;
+  signal remove_proc                   : std_logic;
+  signal start_scheduling              : std_logic;
+  signal action_activate_task          : std_logic;
+  signal action_set_event              : std_logic;
+  signal central_interrupt_handler     : std_logic;
+  signal activate_isr2                 : std_logic;
+  signal counter_tick                  : std_logic;
+  signal call_save                     : std_logic;
+  signal activate_task_service         : std_logic;
+  signal terminate_task_service        : std_logic;
+  signal chain_task_service            : std_logic;
+  signal schedule_service              : std_logic;
+  signal set_event_service             : std_logic;
+  signal wait_event_service            : std_logic;
+  signal release_resource_service      : std_logic;
+  signal start_os_service              : std_logic;
+  signal terminate_isr2_service        : std_logic;
+  signal terminate_application_service : std_logic;
+  signal reset                         : std_logic;
+  signal enable_IT                     : std_logic;
 
   component services is
     port (
-      clk                      : in  std_logic;
-      reset_n                  : in  std_logic;
-      trigger                  : in  std_logic;
-      reg_OS_instru_service    : in  std_logic_vector(31 downto 0);
-      activate_task_service    : out std_logic;
-      terminate_task_service   : out std_logic;
-      chain_task_service       : out std_logic;
-      schedule_service         : out std_logic;
-      set_event_service        : out std_logic;
-      wait_event_service       : out std_logic;
-      release_resource_service : out std_logic;
-      start_os_service         : out std_logic);
+      clk                           : in  std_logic;
+      reset_n                       : in  std_logic;
+      trigger                       : in  std_logic;
+      reg_OS_instru_service         : in  std_logic_vector(31 downto 0);
+      activate_task_service         : out std_logic;
+      terminate_task_service        : out std_logic;
+      chain_task_service            : out std_logic;
+      schedule_service              : out std_logic;
+      set_event_service             : out std_logic;
+      wait_event_service            : out std_logic;
+      release_resource_service      : out std_logic;
+      start_os_service              : out std_logic;
+      terminate_isr2_service        : out std_logic;
+      terminate_application_service : out std_logic);
   end component services;
   signal trigger : std_logic;
 
@@ -270,8 +278,9 @@ begin
   action_activate_task      <= reg_OS_instru_kernel_functions(24);
   action_set_event          <= reg_OS_instru_kernel_functions(25);
   central_interrupt_handler <= reg_OS_instru_kernel_functions(26);
-  counter_tick              <= reg_OS_instru_kernel_functions(27);
-  call_save                 <= reg_OS_instru_kernel_functions(28);
+  activate_isr2             <= reg_OS_instru_kernel_functions(27);
+  counter_tick              <= reg_OS_instru_kernel_functions(28);
+  call_save                 <= reg_OS_instru_kernel_functions(29);
   reset                     <= reg_config(0);
   enable_IT                 <= reg_config(1);
 
@@ -377,73 +386,78 @@ begin
 
   trampoline_properties_monitor : trampoline_properties
     port map (
-      clk                       => HCLK,
-      reset_n                   => HRESETn,
-      E0                        => E0,
-      E1                        => E1,
-      E2                        => E2,
-      E3                        => E3,
-      E4                        => E4,
-      E5                        => E5,
-      E6                        => E6,
-      E7                        => E7,
-      call_handler              => call_handler,
-      call_service              => call_service,
-      call_context              => call_context,
-      compare_entries           => compare_entries,
-      bubble_up                 => bubble_up,
-      bubble_down               => bubble_down,
-      put_new_proc              => put_new_proc,
-      put_preempted_proc        => put_preempted_proc,
-      remove_front_proc         => remove_front_proc,
-      get_internal_resource     => get_internal_resource,
-      release_internal_resource => release_internal_resource,
-      preempt                   => preempt,
-      run_elected               => run_elected,
-      start                     => start,
-      schedule_from_running     => schedule_from_running,
-      terminate                 => terminate,
-      block_s                   => block_s,
-      activate_task             => activate_task,
-      release                   => release,
-      set_event                 => set_event,
-      init_proc                 => init_proc,
-      init_os                   => init_os,
-      remove_proc               => remove_proc,
-      start_scheduling          => start_scheduling,
-      action_activate_task      => action_activate_task,
-      action_set_event          => action_set_event,
-      call_save                 => call_save,
-      central_interrupt_handler => central_interrupt_handler,
-      counter_tick              => counter_tick,
-      activate_task_service     => activate_task_service,
-      terminate_task_service    => terminate_task_service,
-      chain_task_service        => chain_task_service,
-      schedule_service          => schedule_service,
-      set_event_service         => set_event_service,
-      wait_event_service        => wait_event_service,
-      release_resource_service  => release_resource_service,
-      start_os_service          => start_os_service,
-      reset                     => reset,
-      enable_IT                 => enable_IT,
-      valid                     => valid);
+      clk                           => HCLK,
+      reset_n                       => HRESETn,
+      E0                            => E0,
+      E1                            => E1,
+      E2                            => E2,
+      E3                            => E3,
+      E4                            => E4,
+      E5                            => E5,
+      E6                            => E6,
+      E7                            => E7,
+      call_handler                  => call_handler,
+      call_service                  => call_service,
+      call_context                  => call_context,
+      compare_entries               => compare_entries,
+      bubble_up                     => bubble_up,
+      bubble_down                   => bubble_down,
+      put_new_proc                  => put_new_proc,
+      put_preempted_proc            => put_preempted_proc,
+      remove_front_proc             => remove_front_proc,
+      get_internal_resource         => get_internal_resource,
+      release_internal_resource     => release_internal_resource,
+      preempt                       => preempt,
+      run_elected                   => run_elected,
+      start                         => start,
+      schedule_from_running         => schedule_from_running,
+      terminate                     => terminate,
+      block_s                       => block_s,
+      activate_task                 => activate_task,
+      release                       => release,
+      set_event                     => set_event,
+      init_proc                     => init_proc,
+      init_os                       => init_os,
+      remove_proc                   => remove_proc,
+      start_scheduling              => start_scheduling,
+      action_activate_task          => action_activate_task,
+      action_set_event              => action_set_event,
+      call_save                     => call_save,
+      central_interrupt_handler     => central_interrupt_handler,
+      activate_isr2                 => activate_isr2,
+      counter_tick                  => counter_tick,
+      activate_task_service         => activate_task_service,
+      terminate_task_service        => terminate_task_service,
+      chain_task_service            => chain_task_service,
+      schedule_service              => schedule_service,
+      set_event_service             => set_event_service,
+      wait_event_service            => wait_event_service,
+      release_resource_service      => release_resource_service,
+      start_os_service              => start_os_service,
+      terminate_isr2_service        => terminate_isr2_service,
+      terminate_application_service => terminate_application_service,
+      reset                         => reset,
+      enable_IT                     => enable_IT,
+      valid                         => valid);
 
   assert (HRESETn /= '1' or valid = '1') report "Valid false !" severity failure;
 
   services_identifier : services
     port map (
-      clk                      => HCLK,
-      reset_n                  => HRESETn,
-      trigger                  => trigger,
-      reg_OS_instru_service    => reg_OS_instru_service,
-      activate_task_service    => activate_task_service,
-      terminate_task_service   => terminate_task_service,
-      chain_task_service       => chain_task_service,
-      schedule_service         => schedule_service,
-      set_event_service        => set_event_service,
-      wait_event_service       => wait_event_service,
-      release_resource_service => release_resource_service,
-      start_os_service         => start_os_service);
+      clk                           => HCLK,
+      reset_n                       => HRESETn,
+      trigger                       => trigger,
+      reg_OS_instru_service         => reg_OS_instru_service,
+      activate_task_service         => activate_task_service,
+      terminate_task_service        => terminate_task_service,
+      chain_task_service            => chain_task_service,
+      schedule_service              => schedule_service,
+      set_event_service             => set_event_service,
+      wait_event_service            => wait_event_service,
+      release_resource_service      => release_resource_service,
+      terminate_isr2_service        => terminate_isr2_service,
+      terminate_application_service => terminate_application_service,
+      start_os_service              => start_os_service);
 
   -- psl default clock is rising_edge(HCLK);
 
@@ -487,7 +501,7 @@ begin
 
   -- psl property Prop20 is always(fell(activate_task_service) -> (E0 or E3 or E4));
 
-  -- psl property Prop21 is always(terminate_task_service -> (E0 or E1));
+  -- psl property Prop21 is always(terminate_task_service -> (E0 or E1 or E4 or E5));
 
   -- psl property Prop22 is always(fell(terminate_task_service) -> E1);
 
@@ -499,7 +513,7 @@ begin
 
   -- psl property Prop26 is always(put_preempted_proc -> run_elected);
 
-  -- psl property Prop27 is always(put_new_proc -> (release or activate_task));
+  -- psl property Prop27 is always(put_new_proc -> (release or activate_task or activate_isr2));
 
   -- psl property Prop28 is always(remove_front_proc -> start);
 
@@ -509,15 +523,15 @@ begin
 
   -- psl property Prop31 is always(run_elected -> call_context);
 
-  -- psl property Prop32 is always(start -> (schedule_from_running or terminate_task_service or chain_task_service or start_scheduling or release));
+  -- psl property Prop32 is always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service));
 
-  -- psl property Prop33 is always(release_internal_resource -> (block_s or terminate or schedule_service));
+  -- psl property Prop33 is always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service));
 
   -- psl property Prop34 is always(block_s -> wait_event_service);
 
-  -- psl property Prop35 is always(terminate -> (terminate_task_service or chain_task_service));
+  -- psl property Prop35 is always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service));
 
-  -- psl property Prop36 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task));
+  -- psl property Prop36 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service));
 
   -- psl property Prop37 is always(set_event -> (set_event_service or action_set_event));
 

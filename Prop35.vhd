@@ -1,6 +1,6 @@
 --Entity Prop35 for property Prop35
 --Formula is :
---assert  always(terminate -> (terminate_task_service or chain_task_service)); 
+--assert  always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service)); 
 
 
 
