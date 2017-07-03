@@ -1,6 +1,6 @@
 --Entity Prop25 for property Prop25
 --Formula is :
---assert  always(bubble_down -> (remove_front_proc or remove_proc)); 
+--assert  always(put_preempted_proc -> run_elected); 
 
 
 

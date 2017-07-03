@@ -101,6 +101,7 @@ architecture architecture_apb_monitor of apb_monitor is
       central_interrupt_handler     : in  std_logic;
       activate_isr2                 : in  std_logic;
       counter_tick                  : in  std_logic;
+      notify_receiving_mos          : in  std_logic;
       activate_task_service         : in  std_logic;
       terminate_task_service        : in  std_logic;
       chain_task_service            : in  std_logic;
@@ -111,50 +112,51 @@ architecture architecture_apb_monitor of apb_monitor is
       start_os_service              : in  std_logic;
       terminate_isr2_service        : in  std_logic;
       terminate_application_service : in  std_logic;
+      increment_counter_service     : in  std_logic;
+      call_terminate_task_service   : in  std_logic;
       reset                         : in  std_logic;
       enable_IT                     : in  std_logic;
       pending                       : out std_logic;
       valid                         : out std_logic;
-      valid_40_Prop01               : out std_logic;
-      valid_41_Prop02               : out std_logic;
-      valid_42_Prop03               : out std_logic;
-      valid_43_Prop04               : out std_logic;
-      valid_44_Prop05               : out std_logic;
-      valid_45_Prop06               : out std_logic;
-      valid_46_Prop07               : out std_logic;
-      valid_47_Prop08               : out std_logic;
-      valid_48_Prop09               : out std_logic;
-      valid_49_Prop10               : out std_logic;
-      valid_50_Prop11               : out std_logic;
-      valid_51_Prop12               : out std_logic;
-      valid_52_Prop13               : out std_logic;
-      valid_53_Prop14               : out std_logic;
-      valid_54_Prop15               : out std_logic;
-      valid_55_Prop16               : out std_logic;
-      valid_56_Prop17               : out std_logic;
-      valid_57_Prop18               : out std_logic;
-      valid_58_Prop19               : out std_logic;
-      valid_59_Prop20               : out std_logic;
-      valid_60_Prop21               : out std_logic;
-      valid_61_Prop22               : out std_logic;
-      valid_62_Prop23               : out std_logic;
-      valid_63_Prop24               : out std_logic;
-      valid_64_Prop25               : out std_logic;
-      valid_65_Prop26               : out std_logic;
-      valid_66_Prop27               : out std_logic;
-      valid_67_Prop28               : out std_logic;
-      valid_68_Prop29               : out std_logic;
-      valid_69_Prop30               : out std_logic;
-      valid_70_Prop31               : out std_logic;
-      valid_71_Prop32               : out std_logic;
-      valid_72_Prop33               : out std_logic;
-      valid_73_Prop34               : out std_logic;
-      valid_74_Prop35               : out std_logic;
-      valid_75_Prop36               : out std_logic;
-      valid_76_Prop37               : out std_logic;
-      valid_77_Prop38               : out std_logic;
-      valid_78_Prop39               : out std_logic;
-      valid_79_Prop40               : out std_logic);
+      valid_39_Prop01               : out std_logic;
+      valid_40_Prop02               : out std_logic;
+      valid_41_Prop03               : out std_logic;
+      valid_42_Prop04               : out std_logic;
+      valid_43_Prop05               : out std_logic;
+      valid_44_Prop06               : out std_logic;
+      valid_45_Prop07               : out std_logic;
+      valid_46_Prop08               : out std_logic;
+      valid_47_Prop09               : out std_logic;
+      valid_48_Prop10               : out std_logic;
+      valid_49_Prop11               : out std_logic;
+      valid_50_Prop12               : out std_logic;
+      valid_51_Prop13               : out std_logic;
+      valid_52_Prop14               : out std_logic;
+      valid_53_Prop15               : out std_logic;
+      valid_54_Prop16               : out std_logic;
+      valid_55_Prop17               : out std_logic;
+      valid_56_Prop18               : out std_logic;
+      valid_57_Prop19               : out std_logic;
+      valid_58_Prop20               : out std_logic;
+      valid_59_Prop21               : out std_logic;
+      valid_60_Prop22               : out std_logic;
+      valid_61_Prop23               : out std_logic;
+      valid_62_Prop24               : out std_logic;
+      valid_63_Prop25               : out std_logic;
+      valid_64_Prop26               : out std_logic;
+      valid_65_Prop27               : out std_logic;
+      valid_66_Prop28               : out std_logic;
+      valid_67_Prop29               : out std_logic;
+      valid_68_Prop30               : out std_logic;
+      valid_69_Prop31               : out std_logic;
+      valid_70_Prop32               : out std_logic;
+      valid_71_Prop33               : out std_logic;
+      valid_72_Prop34               : out std_logic;
+      valid_73_Prop35               : out std_logic;
+      valid_74_Prop36               : out std_logic;
+      valid_75_Prop37               : out std_logic;
+      valid_76_Prop38               : out std_logic;
+      valid_77_Prop39               : out std_logic);
   end component trampoline_properties;
 
   -- Atomics
@@ -196,6 +198,7 @@ architecture architecture_apb_monitor of apb_monitor is
   signal activate_isr2                 : std_logic;
   signal counter_tick                  : std_logic;
   signal call_save                     : std_logic;
+  signal notify_receiving_mos          : std_logic;
   signal activate_task_service         : std_logic;
   signal terminate_task_service        : std_logic;
   signal chain_task_service            : std_logic;
@@ -206,6 +209,8 @@ architecture architecture_apb_monitor of apb_monitor is
   signal start_os_service              : std_logic;
   signal terminate_isr2_service        : std_logic;
   signal terminate_application_service : std_logic;
+  signal increment_counter_service     : std_logic;
+  signal call_terminate_task_service   : std_logic;
   signal reset                         : std_logic;
   signal enable_IT                     : std_logic;
 
@@ -224,7 +229,10 @@ architecture architecture_apb_monitor of apb_monitor is
       release_resource_service      : out std_logic;
       start_os_service              : out std_logic;
       terminate_isr2_service        : out std_logic;
-      terminate_application_service : out std_logic);
+      terminate_application_service : out std_logic;
+      increment_counter_service     : out std_logic;
+      call_terminate_task_service   : out std_logic
+      );
   end component services;
   signal trigger : std_logic;
 
@@ -281,6 +289,7 @@ begin
   activate_isr2             <= reg_OS_instru_kernel_functions(27);
   counter_tick              <= reg_OS_instru_kernel_functions(28);
   call_save                 <= reg_OS_instru_kernel_functions(29);
+  notify_receiving_mos      <= reg_OS_instru_kernel_functions(30);
   reset                     <= reg_config(0);
   enable_IT                 <= reg_config(1);
 
@@ -426,6 +435,7 @@ begin
       central_interrupt_handler     => central_interrupt_handler,
       activate_isr2                 => activate_isr2,
       counter_tick                  => counter_tick,
+      notify_receiving_mos          => notify_receiving_mos,
       activate_task_service         => activate_task_service,
       terminate_task_service        => terminate_task_service,
       chain_task_service            => chain_task_service,
@@ -436,6 +446,8 @@ begin
       start_os_service              => start_os_service,
       terminate_isr2_service        => terminate_isr2_service,
       terminate_application_service => terminate_application_service,
+      increment_counter_service     => increment_counter_service,
+      call_terminate_task_service   => call_terminate_task_service,
       reset                         => reset,
       enable_IT                     => enable_IT,
       valid                         => valid);
@@ -457,7 +469,9 @@ begin
       release_resource_service      => release_resource_service,
       terminate_isr2_service        => terminate_isr2_service,
       terminate_application_service => terminate_application_service,
-      start_os_service              => start_os_service);
+      increment_counter_service     => increment_counter_service,
+      start_os_service              => start_os_service,
+      call_terminate_task_service   => call_terminate_task_service);
 
   -- psl default clock is rising_edge(HCLK);
 
@@ -503,43 +517,41 @@ begin
 
   -- psl property Prop21 is always(terminate_task_service -> (E0 or E1 or E4 or E5));
 
-  -- psl property Prop22 is always(fell(terminate_task_service) -> E1);
+  -- psl property Prop22 is always(compare_entries -> (bubble_up or bubble_down));
 
-  -- psl property Prop23 is always(compare_entries -> (bubble_up or bubble_down));
+  -- psl property Prop23 is always(bubble_up -> (put_new_proc or put_preempted_proc));
 
-  -- psl property Prop24 is always(bubble_up -> (put_new_proc or put_preempted_proc));
+  -- psl property Prop24 is always(bubble_down -> (remove_front_proc or remove_proc));
 
-  -- psl property Prop25 is always(bubble_down -> (remove_front_proc or remove_proc));
+  -- psl property Prop25 is always(put_preempted_proc -> run_elected);
 
-  -- psl property Prop26 is always(put_preempted_proc -> run_elected);
+  -- psl property Prop26 is always(put_new_proc -> (release or activate_task or activate_isr2));
 
-  -- psl property Prop27 is always(put_new_proc -> (release or activate_task or activate_isr2));
+  -- psl property Prop27 is always(remove_front_proc -> start);
 
-  -- psl property Prop28 is always(remove_front_proc -> start);
+  -- psl property Prop28 is always(init_proc -> start);
 
-  -- psl property Prop29 is always(init_proc -> start);
+  -- psl property Prop29 is always(release -> set_event);
 
-  -- psl property Prop30 is always(release -> set_event);
+  -- psl property Prop30 is always(run_elected -> call_context);
 
-  -- psl property Prop31 is always(run_elected -> call_context);
+  -- psl property Prop31 is always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service or call_terminate_task_service));
 
-  -- psl property Prop32 is always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service));
+  -- psl property Prop32 is always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service));
 
-  -- psl property Prop33 is always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service));
+  -- psl property Prop33 is always(block_s -> wait_event_service);
 
-  -- psl property Prop34 is always(block_s -> wait_event_service);
+  -- psl property Prop34 is always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service));
 
-  -- psl property Prop35 is always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service));
+  -- psl property Prop35 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service));
 
-  -- psl property Prop36 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service));
+  -- psl property Prop36 is always(set_event -> (set_event_service or action_set_event));
 
-  -- psl property Prop37 is always(set_event -> (set_event_service or action_set_event));
+  -- psl property Prop37 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick or increment_counter_service or notify_receiving_mos));
 
-  -- psl property Prop38 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick));
+  -- psl property Prop38 is always(start_scheduling -> start_os_service);
 
-  -- psl property Prop39 is always(start_scheduling -> start_os_service);
-
-  -- psl property Prop40 is always(init_os -> start_os_service);
+  -- psl property Prop39 is always(init_os -> start_os_service);
 
   -- psl assert Prop01;
   -- psl assert Prop02;
@@ -580,6 +592,5 @@ begin
   -- psl assert Prop37;
   -- psl assert Prop38;
   -- psl assert Prop39;
-  -- psl assert Prop40;
 
 end architecture_apb_monitor;

@@ -1,6 +1,6 @@
 --Entity Prop23 for property Prop23
 --Formula is :
---assert  always(compare_entries -> (bubble_up or bubble_down)); 
+--assert  always(bubble_up -> (put_new_proc or put_preempted_proc)); 
 
 
 

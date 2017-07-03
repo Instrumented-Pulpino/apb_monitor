@@ -1,6 +1,6 @@
 --Entity Prop30 for property Prop30
 --Formula is :
---assert  always(release -> set_event); 
+--assert  always(run_elected -> call_context); 
 
 
 

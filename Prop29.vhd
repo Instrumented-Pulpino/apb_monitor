@@ -1,6 +1,6 @@
 --Entity Prop29 for property Prop29
 --Formula is :
---assert  always(init_proc -> start); 
+--assert  always(release -> set_event); 
 
 
 

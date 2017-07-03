@@ -1,6 +1,6 @@
 --Entity Prop26 for property Prop26
 --Formula is :
---assert  always(put_preempted_proc -> run_elected); 
+--assert  always(put_new_proc -> (release or activate_task or activate_isr2)); 
 
 
 

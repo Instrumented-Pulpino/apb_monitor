@@ -1,6 +1,6 @@
 --Entity Prop28 for property Prop28
 --Formula is :
---assert  always(remove_front_proc -> start); 
+--assert  always(init_proc -> start); 
 
 
 

@@ -18,7 +18,9 @@ entity services is
     release_resource_service      : out std_logic;
     start_os_service              : out std_logic;
     terminate_isr2_service        : out std_logic;
-    terminate_application_service : out std_logic
+    terminate_application_service : out std_logic;
+    increment_counter_service     : out std_logic;
+    call_terminate_task_service   : out std_logic
     );
 
 end services;
@@ -35,6 +37,8 @@ architecture behav of services is
   constant START_OS              : unsigned := to_unsigned(45, 8);
   constant TERMINATE_ISR2        : unsigned := to_unsigned(27, 8);
   constant TERMINATE_APPLICATION : unsigned := to_unsigned(6, 8);
+  constant INCREMENT_COUNTER     : unsigned := to_unsigned(11, 8);
+  constant CALL_TERMINATE_TASK   : unsigned := to_unsigned(72, 8);
   constant NO_SERVICE            : unsigned := x"FF";
 
   signal pile_service      : std_logic_vector(31 downto 0);
@@ -122,6 +126,20 @@ begin  -- architecture behav
                                    pile_service_3_u = TERMINATE_APPLICATION or
                                    pile_service_4_u = TERMINATE_APPLICATION
                                    else '0';
+
+  increment_counter_service <= '1' when
+                               pile_service_1_u = INCREMENT_COUNTER or
+                               pile_service_2_u = INCREMENT_COUNTER or
+                               pile_service_3_u = INCREMENT_COUNTER or
+                               pile_service_4_u = INCREMENT_COUNTER
+                               else '0';
+
+  call_terminate_task_service <= '1' when
+                                 pile_service_1_u = CALL_TERMINATE_TASK or
+                                 pile_service_2_u = CALL_TERMINATE_TASK or
+                                 pile_service_3_u = CALL_TERMINATE_TASK or
+                                 pile_service_4_u = CALL_TERMINATE_TASK
+                                 else '0';
 
   sequential_process : process (trigger, reset_n) is
   begin  -- process sequential_process

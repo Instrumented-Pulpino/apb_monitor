@@ -1,6 +1,6 @@
 --Entity Prop34 for property Prop34
 --Formula is :
---assert  always(block_s -> wait_event_service); 
+--assert  always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service)); 
 
 
 

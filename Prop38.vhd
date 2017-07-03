@@ -1,6 +1,6 @@
 --Entity Prop38 for property Prop38
 --Formula is :
---assert  always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick)); 
+--assert  always(start_scheduling -> start_os_service); 
 
 
 

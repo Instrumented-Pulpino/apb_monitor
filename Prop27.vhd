@@ -1,6 +1,6 @@
 --Entity Prop27 for property Prop27
 --Formula is :
---assert  always(put_new_proc -> (release or activate_task or activate_isr2)); 
+--assert  always(remove_front_proc -> start); 
 
 
 

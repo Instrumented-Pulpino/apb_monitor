@@ -1,6 +1,6 @@
 --Entity Prop24 for property Prop24
 --Formula is :
---assert  always(bubble_up -> (put_new_proc or put_preempted_proc)); 
+--assert  always(bubble_down -> (remove_front_proc or remove_proc)); 
 
 
 
