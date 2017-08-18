@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 entity apb_monitor is
   port(
@@ -37,9 +38,8 @@ architecture architecture_apb_monitor of apb_monitor is
   constant ADDR_tpl_kern_need_schedule         : std_logic_vector(31 downto 0) := X"1A10801C";
   constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108020";
   constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108024";
-  constant ADDR_reg_return                     : std_logic_vector(31 downto 0) := X"1A108028";
+  constant ADDR_reg_OS_reentrancy_counter      : std_logic_vector(31 downto 0) := X"1A108028";
   constant ADDR_reg_config                     : std_logic_vector(31 downto 0) := X"1A10802C";
-  constant ADDR_reg_return_2                   : std_logic_vector(31 downto 0) := X"1A108030";
 
   signal reg_tpl_kern_srunning          : std_logic_vector(31 downto 0);
   signal reg_tpl_kern_selected          : std_logic_vector(31 downto 0);
@@ -52,8 +52,7 @@ architecture architecture_apb_monitor of apb_monitor is
   signal reg_OS_instru_service          : std_logic_vector(31 downto 0);
   signal reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0);
   signal reg_config                     : std_logic_vector(31 downto 0);
-  signal reg_return                     : std_logic_vector(31 downto 0);
-  signal reg_return_2                   : std_logic_vector(31 downto 0);
+  signal reg_OS_reentrancy_counter      : unsigned(31 downto 0);
 
   -- tpl_kern state machine
   signal kernel_state_bits : std_logic_vector(2 downto 0);
@@ -307,9 +306,8 @@ begin
       tpl_kern_need_schedule         <= '0';
       reg_OS_instru_service          <= (others => '0');
       reg_OS_instru_kernel_functions <= (others => '0');
+      reg_OS_reentrancy_counter      <= (others => '0');
       reg_config                     <= (others => '0');
-      reg_return                     <= (others => '0');
-      reg_return_2                   <= (others => '0');
       trigger                        <= '0';
       monitor_valid_i                <= '0';
     elsif HCLK'event and HCLK = '1' then  -- rising clock edge
@@ -333,6 +331,7 @@ begin
             when ADDR_reg_OS_instru_service          => reg_OS_instru_service          <= PWDATA; trigger <= '1';
             when ADDR_reg_OS_instru_kernel_functions => reg_OS_instru_kernel_functions <= PWDATA xor reg_OS_instru_kernel_functions;
             when ADDR_reg_config                     => reg_config                     <= PWDATA;
+            when ADDR_reg_OS_reentrancy_counter      => reg_OS_reentrancy_counter      <= unsigned(PWDATA);
             when others                              => null;
           end case;
         end if;
@@ -344,8 +343,8 @@ begin
   combinational_process : process (PADDR, PENABLE, PSEL, PWRITE,
                                    kernel_state_bits, monitor_valid_i,
                                    reg_OS_instru_kernel_functions,
-                                   reg_OS_instru_service, reg_config,
-                                   reg_return, reg_return_2,
+                                   reg_OS_instru_service,
+                                   reg_OS_reentrancy_counter, reg_config,
                                    reg_tpl_kern_elected,
                                    reg_tpl_kern_electedID,
                                    reg_tpl_kern_running,
@@ -369,8 +368,7 @@ begin
         when ADDR_reg_OS_instru_service          => PRDATA <= reg_OS_instru_service;
         when ADDR_reg_OS_instru_kernel_functions => PRDATA <= reg_OS_instru_kernel_functions;
         when ADDR_reg_config                     => PRDATA <= reg_config;
-        when ADDR_reg_return                     => PRDATA <= reg_return;
-        when ADDR_reg_return_2                   => PRDATA <= reg_return_2;
+        when ADDR_reg_OS_reentrancy_counter      => PRDATA <= std_logic_vector(reg_OS_reentrancy_counter);
         when others                              => PRDATA <= (others => '0');
       end case;
     end if;
