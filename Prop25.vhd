@@ -1,6 +1,6 @@
 --Entity Prop25 for property Prop25
 --Formula is :
---assert  always(set_event_service -> not(E1 or E5)); 
+--assert  always(schedule_service -> (E0 or E3)); 
 
 
 

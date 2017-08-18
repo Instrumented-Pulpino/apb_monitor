@@ -1,6 +1,6 @@
 --Entity Prop28 for property Prop28
 --Formula is :
---assert  always(release_resource_service -> (E0 or E3)); 
+--assert  always(wait_event_service -> (E0 or E3)); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop32 for property Prop32
 --Formula is :
---assert  always(put_preempted_proc -> run_elected); 
+--assert  always(bubble_down -> (remove_front_proc or remove_proc)); 
 
 
 

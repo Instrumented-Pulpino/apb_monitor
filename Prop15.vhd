@@ -1,6 +1,6 @@
 --Entity Prop15 for property Prop15
 --Formula is :
---assert  always(call_service -> call_handler); 
+--assert  always(run_elected -> call_context); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop35 for property Prop35
 --Formula is :
---assert  always(init_proc -> start); 
+--assert  always(remove_front_proc -> start); 
 
 
 

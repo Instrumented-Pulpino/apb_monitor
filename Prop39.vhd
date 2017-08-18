@@ -1,6 +1,6 @@
 --Entity Prop39 for property Prop39
 --Formula is :
---assert  always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service)); 
+--assert  always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service or call_terminate_task_service)); 
 
 
 

@@ -70,6 +70,7 @@ architecture architecture_apb_monitor of apb_monitor is
       E5                            : in  std_logic;
       E6                            : in  std_logic;
       E7                            : in  std_logic;
+      reentrancy_level_1            : in  std_logic;
       call_handler                  : in  std_logic;
       call_service                  : in  std_logic;
       call_context                  : in  std_logic;
@@ -118,52 +119,53 @@ architecture architecture_apb_monitor of apb_monitor is
       enable_IT                     : in  std_logic;
       pending                       : out std_logic;
       valid                         : out std_logic;
-      valid_46_Prop01               : out std_logic;
-      valid_47_Prop02               : out std_logic;
-      valid_48_Prop03               : out std_logic;
-      valid_49_Prop04               : out std_logic;
-      valid_50_Prop05               : out std_logic;
-      valid_51_Prop06               : out std_logic;
-      valid_52_Prop07               : out std_logic;
-      valid_53_Prop08               : out std_logic;
-      valid_54_Prop09               : out std_logic;
-      valid_55_Prop10               : out std_logic;
-      valid_56_Prop11               : out std_logic;
-      valid_57_Prop12               : out std_logic;
-      valid_58_Prop13               : out std_logic;
-      valid_59_Prop14               : out std_logic;
-      valid_60_Prop15               : out std_logic;
-      valid_61_Prop16               : out std_logic;
-      valid_62_Prop17               : out std_logic;
-      valid_63_Prop18               : out std_logic;
-      valid_64_Prop19               : out std_logic;
-      valid_65_Prop20               : out std_logic;
-      valid_66_Prop21               : out std_logic;
-      valid_67_Prop22               : out std_logic;
-      valid_68_Prop23               : out std_logic;
-      valid_69_Prop24               : out std_logic;
-      valid_70_Prop25               : out std_logic;
-      valid_71_Prop26               : out std_logic;
-      valid_72_Prop27               : out std_logic;
-      valid_73_Prop28               : out std_logic;
-      valid_74_Prop29               : out std_logic;
-      valid_75_Prop30               : out std_logic;
-      valid_76_Prop31               : out std_logic;
-      valid_77_Prop32               : out std_logic;
-      valid_78_Prop33               : out std_logic;
-      valid_79_Prop34               : out std_logic;
-      valid_80_Prop35               : out std_logic;
-      valid_81_Prop36               : out std_logic;
-      valid_82_Prop37               : out std_logic;
-      valid_83_Prop38               : out std_logic;
-      valid_84_Prop39               : out std_logic;
-      valid_85_Prop40               : out std_logic;
-      valid_86_Prop41               : out std_logic;
-      valid_87_Prop42               : out std_logic;
-      valid_88_Prop43               : out std_logic;
-      valid_89_Prop44               : out std_logic;
-      valid_90_Prop45               : out std_logic;
-      valid_91_Prop46               : out std_logic);
+      valid_47_Prop01               : out std_logic;
+      valid_48_Prop02               : out std_logic;
+      valid_49_Prop03               : out std_logic;
+      valid_50_Prop04               : out std_logic;
+      valid_51_Prop05               : out std_logic;
+      valid_52_Prop06               : out std_logic;
+      valid_53_Prop07               : out std_logic;
+      valid_54_Prop08               : out std_logic;
+      valid_55_Prop09               : out std_logic;
+      valid_56_Prop10               : out std_logic;
+      valid_57_Prop11               : out std_logic;
+      valid_58_Prop12               : out std_logic;
+      valid_59_Prop13               : out std_logic;
+      valid_60_Prop14               : out std_logic;
+      valid_61_Prop15               : out std_logic;
+      valid_62_Prop16               : out std_logic;
+      valid_63_Prop17               : out std_logic;
+      valid_64_Prop18               : out std_logic;
+      valid_65_Prop19               : out std_logic;
+      valid_66_Prop20               : out std_logic;
+      valid_67_Prop21               : out std_logic;
+      valid_68_Prop22               : out std_logic;
+      valid_69_Prop23               : out std_logic;
+      valid_70_Prop24               : out std_logic;
+      valid_71_Prop25               : out std_logic;
+      valid_72_Prop26               : out std_logic;
+      valid_73_Prop27               : out std_logic;
+      valid_74_Prop28               : out std_logic;
+      valid_75_Prop29               : out std_logic;
+      valid_76_Prop30               : out std_logic;
+      valid_77_Prop31               : out std_logic;
+      valid_78_Prop32               : out std_logic;
+      valid_79_Prop33               : out std_logic;
+      valid_80_Prop34               : out std_logic;
+      valid_81_Prop35               : out std_logic;
+      valid_82_Prop36               : out std_logic;
+      valid_83_Prop37               : out std_logic;
+      valid_84_Prop38               : out std_logic;
+      valid_85_Prop39               : out std_logic;
+      valid_86_Prop40               : out std_logic;
+      valid_87_Prop41               : out std_logic;
+      valid_88_Prop42               : out std_logic;
+      valid_89_Prop43               : out std_logic;
+      valid_90_Prop44               : out std_logic;
+      valid_91_Prop45               : out std_logic;
+      valid_92_Prop46               : out std_logic;
+      valid_93_Prop47               : out std_logic);
   end component trampoline_properties;
 
   -- Atomics
@@ -176,6 +178,7 @@ architecture architecture_apb_monitor of apb_monitor is
   signal E6                            : std_logic;
   signal E7                            : std_logic;
   signal running_equal_elected         : std_logic;
+  signal reentrancy_level_1            : std_logic;
   signal call_handler                  : std_logic;
   signal call_service                  : std_logic;
   signal call_context                  : std_logic;
@@ -268,6 +271,7 @@ begin
   E6                        <= kernel_state(6);
   E7                        <= kernel_state(7);
   running_equal_elected     <= '1' when (reg_tpl_kern_running = reg_tpl_kern_elected) else '0';
+  reentrancy_level_1        <= '1' when (unsigned(reg_OS_reentrancy_counter) = 1)     else '0';
   call_handler              <= reg_OS_instru_kernel_functions(0);
   call_service              <= reg_OS_instru_kernel_functions(1);
   call_context              <= reg_OS_instru_kernel_functions(2);
@@ -457,6 +461,7 @@ begin
       terminate_application_service => terminate_application_service,
       increment_counter_service     => increment_counter_service,
       call_terminate_task_service   => call_terminate_task_service,
+      reentrancy_level_1            => reentrancy_level_1,
       reset                         => reset,
       enable_IT                     => enable_IT,
       valid                         => valid);
@@ -485,141 +490,145 @@ begin
   -- psl default clock is rising_edge(HCLK);
 
   -- psl property Prop01 is always(not(E2) and not(E6));
-  -- psl assert Prop01;
 
   -- psl property Prop02 is always(fell(E0) -> (E1 or E3 or E4));
-  -- psl assert Prop02;
 
   -- psl property Prop03 is always(fell(E1) -> (E0));
-  -- psl assert Prop03;
 
   -- psl property Prop04 is always(fell(E3) -> (E0));
-  -- psl assert Prop04;
 
   -- psl property Prop05 is always(fell(E4) -> (E0 or E5 or E7));
-  -- psl assert Prop05;
 
   -- psl property Prop06 is always(fell(E5) -> (E1));
-  -- psl assert Prop06;
 
   -- psl property Prop07 is always(fell(E7) -> (E3));
-  -- psl assert Prop07;
 
   -- psl property Prop08 is always(rose(E4) -> (running_equal_elected));
-  -- psl assert Prop08;
 
-  -- psl property Prop09 is always(rose(call_handler) -> running_equal_elected);
-  -- psl assert Prop09;
+  -- psl property Prop09 is always((rose(call_handler) and (reentrancy_level_1 = '1')) -> running_equal_elected);
 
-  -- psl property Prop10 is always(fell(call_handler) -> running_equal_elected);
-  -- psl assert Prop10;
+  -- psl property Prop10 is always((fell(call_handler) and (reentrancy_level_1 = '1')) -> running_equal_elected);
 
   -- psl property Prop11 is always(fell(call_handler) -> E0);
-  -- psl assert Prop11;
 
   -- psl property Prop12 is always(fell(call_service) -> (not(E5) and not(E7)));
-  -- psl assert Prop12;
 
   -- psl property Prop13 is always(rose(call_context) -> (E1 or E3));
-  -- psl assert Prop13;
 
-  -- psl property Prop14 is always(run_elected -> call_context);
-  -- psl assert Prop14;
+  -- psl property Prop14 is always(rose(call_context) -> (reentrancy_level_1));
 
-  -- psl property Prop15 is always(call_service -> call_handler);
-  -- psl assert Prop15;
+  -- psl property Prop15 is always(run_elected -> call_context);
 
-  -- psl property Prop16 is always(call_context -> call_handler);
-  -- psl assert Prop16;
+  -- psl property Prop16 is always(call_service -> call_handler);
 
-  -- psl property Prop17 is always(rose(call_handler) -> (call_service before fell(call_handler)));
-  -- psl assert Prop17;
+  -- psl property Prop17 is always(call_context -> call_handler);
 
-  -- psl property Prop18 is always(rose(call_save) -> (E3 and call_context));
-  -- psl assert Prop18;
+  -- psl property Prop18 is always(rose(call_handler) -> (call_service before fell(call_handler)));
 
-  -- psl property Prop19 is always(activate_task_service -> (not(E1) and not(E5)));
-  -- psl assert Prop19;
+  -- psl property Prop19 is always(rose(call_save) -> (E3 and call_context));
 
-  -- psl property Prop20 is always(fell(activate_task_service) -> (E0 or E3 or E4));
-  -- psl assert Prop20;
+  -- psl property Prop20 is always(activate_task_service -> (not(E1) and not(E5)));
 
-  -- psl property Prop21 is always(terminate_task_service -> (E0 or E1));
-  -- psl assert Prop21;
+  -- psl property Prop21 is always(fell(activate_task_service) -> (E0 or E3 or E4));
+
+  -- psl property Prop22 is always(terminate_task_service -> (E0 or E1));
 
   -- psl property Prop23 is always(chain_task_service -> not(E3 or E7));
-  -- psl assert Prop23;
 
   -- psl property Prop24 is always(fell(chain_task_service) -> (E0 or E1));
-  -- psl assert Prop24;
 
   -- psl property Prop25 is always(schedule_service -> (E0 or E3));
-  -- psl assert Prop25;
 
   -- psl property Prop26 is always(set_event_service -> not(E1 or E5));
-  -- psl assert Prop26;
 
   -- psl property Prop27 is always(fell(set_event_service) -> (E0 or E3 or E4));
-  -- psl assert Prop27;
 
   -- psl property Prop28 is always(wait_event_service -> (E0 or E3));
-  -- psl assert Prop28;
 
   -- psl property Prop29 is always(release_resource_service -> (E0 or E3));
-  -- psl assert Prop29;
 
   -- psl property Prop30 is always(compare_entries -> (bubble_up or bubble_down));
-  -- psl assert Prop30;
 
   -- psl property Prop31 is always(bubble_up -> (put_new_proc or put_preempted_proc));
-  -- psl assert Prop31;
 
   -- psl property Prop32 is always(bubble_down -> (remove_front_proc or remove_proc));
-  -- psl assert Prop32;
 
   -- psl property Prop33 is always(put_preempted_proc -> run_elected);
-  -- psl assert Prop33;
 
   -- psl property Prop34 is always(put_new_proc -> (release or activate_task or activate_isr2));
-  -- psl assert Prop34;
 
   -- psl property Prop35 is always(remove_front_proc -> start);
-  -- psl assert Prop35;
 
   -- psl property Prop36 is always(init_proc -> start);
-  -- psl assert Prop36;
 
   -- psl property Prop37 is always(release -> set_event);
-  -- psl assert Prop37;
 
   -- psl property Prop38 is always(run_elected -> call_context);
-  -- psl assert Prop38;
 
   -- psl property Prop39 is always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service or call_terminate_task_service));
-  -- psl assert Prop39;
 
   -- psl property Prop40 is always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service));
-  -- psl assert Prop40;
 
   -- psl property Prop41 is always(block_s -> wait_event_service);
-  -- psl assert Prop41;
 
   -- psl property Prop42 is always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service));
-  -- psl assert Prop42;
 
   -- psl property Prop43 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service));
-  -- psl assert Prop43;
 
   -- psl property Prop44 is always(set_event -> (set_event_service or action_set_event));
-  -- psl assert Prop44;
 
   -- psl property Prop45 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick or increment_counter_service or notify_receiving_mos));
-  -- psl assert Prop45;
 
   -- psl property Prop46 is always(start_scheduling -> start_os_service);
-  -- psl assert Prop46;
 
   -- psl property Prop47 is always(init_os -> start_os_service);
+
+  -- psl assert Prop01;
+  -- psl assert Prop02;
+  -- psl assert Prop03;
+  -- psl assert Prop04;
+  -- psl assert Prop05;
+  -- psl assert Prop06;
+  -- psl assert Prop07;
+  -- psl assert Prop08;
+  -- psl assert Prop09;
+  -- psl assert Prop10;
+  -- psl assert Prop11;
+  -- psl assert Prop12;
+  -- psl assert Prop13;
+  -- psl assert Prop14;
+  -- psl assert Prop15;
+  -- psl assert Prop16;
+  -- psl assert Prop17;
+  -- psl assert Prop18;
+  -- psl assert Prop19;
+  -- psl assert Prop20;
+  -- psl assert Prop21;
+  -- psl assert Prop22;
+  -- psl assert Prop23;
+  -- psl assert Prop24;
+  -- psl assert Prop25;
+  -- psl assert Prop26;
+  -- psl assert Prop27;
+  -- psl assert Prop28;
+  -- psl assert Prop29;
+  -- psl assert Prop30;
+  -- psl assert Prop31;
+  -- psl assert Prop32;
+  -- psl assert Prop33;
+  -- psl assert Prop34;
+  -- psl assert Prop35;
+  -- psl assert Prop36;
+  -- psl assert Prop37;
+  -- psl assert Prop38;
+  -- psl assert Prop39;
+  -- psl assert Prop40;
+  -- psl assert Prop41;
+  -- psl assert Prop42;
+  -- psl assert Prop43;
+  -- psl assert Prop44;
+  -- psl assert Prop45;
+  -- psl assert Prop46;
   -- psl assert Prop47;
 
 end architecture_apb_monitor;

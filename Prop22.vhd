@@ -1,6 +1,6 @@
 --Entity Prop22 for property Prop22
 --Formula is :
---assert  always(chain_task_service -> not(E3 or E7)); 
+--assert  always(terminate_task_service -> (E0 or E1)); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop14 for property Prop14
 --Formula is :
---assert  always(run_elected -> call_context); 
+--assert  always(rose(call_context) -> (reentrancy_level_1)); 
 
 
 

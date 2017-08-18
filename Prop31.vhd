@@ -1,6 +1,6 @@
 --Entity Prop31 for property Prop31
 --Formula is :
---assert  always(bubble_down -> (remove_front_proc or remove_proc)); 
+--assert  always(bubble_up -> (put_new_proc or put_preempted_proc)); 
 
 
 

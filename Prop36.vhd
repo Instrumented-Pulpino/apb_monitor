@@ -1,6 +1,6 @@
 --Entity Prop36 for property Prop36
 --Formula is :
---assert  always(release -> set_event); 
+--assert  always(init_proc -> start); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop30 for property Prop30
 --Formula is :
---assert  always(bubble_up -> (put_new_proc or put_preempted_proc)); 
+--assert  always(compare_entries -> (bubble_up or bubble_down)); 
 
 
 

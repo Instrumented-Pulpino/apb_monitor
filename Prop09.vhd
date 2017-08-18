@@ -1,6 +1,6 @@
 --Entity Prop09 for property Prop09
 --Formula is :
---assert  always(rose(call_handler) -> running_equal_elected); 
+--assert  always((rose(call_handler) and reentrancy_level_1) -> running_equal_elected); 
 
 
 

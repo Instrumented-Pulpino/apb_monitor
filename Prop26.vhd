@@ -1,6 +1,6 @@
 --Entity Prop26 for property Prop26
 --Formula is :
---assert  always(fell(set_event_service) -> (E0 or E3 or E4)); 
+--assert  always(set_event_service -> not(E1 or E5)); 
 
 
 

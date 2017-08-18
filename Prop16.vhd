@@ -1,6 +1,6 @@
 --Entity Prop16 for property Prop16
 --Formula is :
---assert  always(call_context -> call_handler); 
+--assert  always(call_service -> call_handler); 
 
 
 

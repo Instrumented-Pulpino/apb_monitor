@@ -1,6 +1,6 @@
 --Entity Prop20 for property Prop20
 --Formula is :
---assert  always(fell(activate_task_service) -> (E0 or E3 or E4)); 
+--assert  always(activate_task_service -> (not(E1) and not(E5))); 
 
 
 

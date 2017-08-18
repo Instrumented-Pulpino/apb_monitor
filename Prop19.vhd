@@ -1,6 +1,6 @@
 --Entity Prop19 for property Prop19
 --Formula is :
---assert  always(activate_task_service -> (not(E1) and not(E5))); 
+--assert  always(rose(call_save) -> (E3 and call_context)); 
 
 
 

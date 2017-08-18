@@ -1,6 +1,6 @@
 --Entity Prop37 for property Prop37
 --Formula is :
---assert  always(run_elected -> call_context); 
+--assert  always(release -> set_event); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop23 for property Prop23
 --Formula is :
---assert  always(fell(chain_task_service) -> (E0 or E1)); 
+--assert  always(chain_task_service -> not(E3 or E7)); 
 
 
 
