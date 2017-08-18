@@ -1,6 +1,6 @@
 --Entity Prop22 for property Prop22
 --Formula is :
---assert  always(compare_entries -> (bubble_up or bubble_down)); 
+--assert  always(chain_task_service -> not(E3 or E7)); 
 
 
 

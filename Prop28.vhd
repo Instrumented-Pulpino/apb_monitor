@@ -1,6 +1,6 @@
 --Entity Prop28 for property Prop28
 --Formula is :
---assert  always(init_proc -> start); 
+--assert  always(release_resource_service -> (E0 or E3)); 
 
 
 

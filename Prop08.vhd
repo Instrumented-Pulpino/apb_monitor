@@ -1,6 +1,6 @@
 --Entity Prop08 for property Prop08
 --Formula is :
---assert  always(rose(run_elected) -> (E1 or E3 or E5 or E7)); 
+--assert  always(rose(E4) -> (running_equal_elected)); 
 
 
 

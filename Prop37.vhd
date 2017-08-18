@@ -1,6 +1,6 @@
 --Entity Prop37 for property Prop37
 --Formula is :
---assert  always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick or increment_counter_service or notify_receiving_mos)); 
+--assert  always(run_elected -> call_context); 
 
 
 

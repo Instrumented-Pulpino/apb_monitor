@@ -1,6 +1,6 @@
 --Entity Prop36 for property Prop36
 --Formula is :
---assert  always(set_event -> (set_event_service or action_set_event)); 
+--assert  always(release -> set_event); 
 
 
 

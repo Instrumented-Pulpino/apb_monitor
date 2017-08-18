@@ -1,6 +1,6 @@
 --Entity Prop14 for property Prop14
 --Formula is :
---assert  always(fell(run_elected) -> call_context); 
+--assert  always(run_elected -> call_context); 
 
 
 

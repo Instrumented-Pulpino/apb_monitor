@@ -1,6 +1,6 @@
 --Entity Prop11 for property Prop11
 --Formula is :
---assert  always(fell(call_handler) -> E0 or E4); 
+--assert  always(fell(call_handler) -> E0); 
 
 
 

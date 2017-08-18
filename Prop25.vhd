@@ -1,6 +1,6 @@
 --Entity Prop25 for property Prop25
 --Formula is :
---assert  always(put_preempted_proc -> run_elected); 
+--assert  always(set_event_service -> not(E1 or E5)); 
 
 
 

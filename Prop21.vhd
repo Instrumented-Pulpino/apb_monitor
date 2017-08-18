@@ -1,6 +1,6 @@
 --Entity Prop21 for property Prop21
 --Formula is :
---assert  always(terminate_task_service -> (E0 or E1 or E4 or E5)); 
+--assert  always(terminate_task_service -> (E0 or E1)); 
 
 
 

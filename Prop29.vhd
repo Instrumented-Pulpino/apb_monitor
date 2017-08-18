@@ -1,6 +1,6 @@
 --Entity Prop29 for property Prop29
 --Formula is :
---assert  always(release -> set_event); 
+--assert  always(compare_entries -> (bubble_up or bubble_down)); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop24 for property Prop24
 --Formula is :
---assert  always(bubble_down -> (remove_front_proc or remove_proc)); 
+--assert  always(schedule_service -> (E0 or E3)); 
 
 
 

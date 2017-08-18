@@ -1,6 +1,6 @@
 --Entity Prop33 for property Prop33
 --Formula is :
---assert  always(block_s -> wait_event_service); 
+--assert  always(put_new_proc -> (release or activate_task or activate_isr2)); 
 
 
 
