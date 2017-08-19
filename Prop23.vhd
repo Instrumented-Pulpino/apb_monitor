@@ -1,6 +1,6 @@
 --Entity Prop23 for property Prop23
 --Formula is :
---assert  always(chain_task_service -> not(E3 or E7)); 
+--assert  always(activate_task_service -> (not(E1) and not(E5))); 
 
 
 

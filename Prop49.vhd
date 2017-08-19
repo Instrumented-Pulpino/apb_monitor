@@ -1,6 +1,6 @@
---Entity Prop31 for property Prop31
+--Entity Prop49 for property Prop49
 --Formula is :
---assert  always(wait_event_service -> (E0 or E3)); 
+--assert  always(init_os -> start_os_service); 
 
 
 
@@ -11,39 +11,39 @@ use work.psl_monitor_s_reset.all;
 
 
 --entity 
-entity Prop31 is
+entity Prop49 is
 	 port(
 	 clk : in std_logic;
 	 reset_n : in std_logic;
-	 cond_30_2 : in std_logic;
-	 pending_30 : out std_logic;
-	 trigger_imply_30_2 : out std_logic
+	 cond_48_2 : in std_logic;
+	 pending_48 : out std_logic;
+	 trigger_imply_48_2 : out std_logic
 	);
-end entity Prop31;
+end entity Prop49;
 --end of entity 
 
 
 --architecture 
-architecture mon of Prop31 is
+architecture mon of Prop49 is
 
 --internal signal
-signal	trigger_always_30_1, trigger_init_30_0	: std_logic;
+signal	trigger_always_48_1, trigger_init_48_0	: std_logic;
 
 begin
 
 --pending expression
-	pending_30 <= '0';
+	pending_48 <= '0';
 
-	imply_30_2 : mnt_impl	--no generic port
+	imply_48_2 : mnt_impl	--no generic port
 	port map (
-		start => trigger_always_30_1,
-		cond => cond_30_2,
-		trigger => trigger_imply_30_2
+		start => trigger_always_48_1,
+		cond => cond_48_2,
+		trigger => trigger_imply_48_2
 	);
 
 
 
-	always_30_1 : mnt_always
+	always_48_1 : mnt_always
 	generic map (
 		EDGE => '1',
 		LEVEL =>'0',
@@ -54,13 +54,13 @@ begin
 		clk_en => '1',
 		clk => clk,
 		reset_n => reset_n,
-		start => trigger_init_30_0,
-		trigger => trigger_always_30_1
+		start => trigger_init_48_0,
+		trigger => trigger_always_48_1
 	);
 
 
 
-	init_30_0 : gen_init
+	init_48_0 : gen_init
 	generic map (
 		GATED_CLOCK => 0,
 		EDGE =>'1',
@@ -71,7 +71,7 @@ begin
 		clk_en => '1',
 		clk => clk,
 		reset_n => reset_n,
-		trigger => trigger_init_30_0
+		trigger => trigger_init_48_0
 	);
 
 

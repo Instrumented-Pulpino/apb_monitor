@@ -1,6 +1,6 @@
 --Entity Prop37 for property Prop37
 --Formula is :
---assert  always(release -> set_event); 
+--assert  always(put_new_proc -> (release or activate_task or activate_isr2)); 
 
 
 

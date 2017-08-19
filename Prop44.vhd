@@ -1,6 +1,6 @@
 --Entity Prop44 for property Prop44
 --Formula is :
---assert  always(set_event -> (set_event_service or action_set_event)); 
+--assert  always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service)); 
 
 
 

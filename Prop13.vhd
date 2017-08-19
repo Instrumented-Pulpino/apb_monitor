@@ -1,6 +1,6 @@
 --Entity Prop13 for property Prop13
 --Formula is :
---assert  always(rose(call_context) -> (E1 or E3)); 
+--assert  always(fell(call_service) -> (not(E5) and not(E7))); 
 
 
 

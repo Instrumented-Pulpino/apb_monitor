@@ -1,6 +1,6 @@
 --Entity Prop20 for property Prop20
 --Formula is :
---assert  always(activate_task_service -> (not(E1) and not(E5))); 
+--assert  always(not(call_handler_enter) or not(reentrancy_counter = 3)); 
 
 
 
@@ -15,9 +15,8 @@ entity Prop20 is
 	 port(
 	 clk : in std_logic;
 	 reset_n : in std_logic;
-	 cond_19_2 : in std_logic;
 	 pending_19 : out std_logic;
-	 trigger_imply_19_2 : out std_logic
+	 trigger_always_19_1 : out std_logic
 	);
 end entity Prop20;
 --end of entity 
@@ -27,21 +26,12 @@ end entity Prop20;
 architecture mon of Prop20 is
 
 --internal signal
-signal	trigger_always_19_1, trigger_init_19_0	: std_logic;
+signal	trigger_init_19_0	: std_logic;
 
 begin
 
 --pending expression
 	pending_19 <= '0';
-
-	imply_19_2 : mnt_impl	--no generic port
-	port map (
-		start => trigger_always_19_1,
-		cond => cond_19_2,
-		trigger => trigger_imply_19_2
-	);
-
-
 
 	always_19_1 : mnt_always
 	generic map (

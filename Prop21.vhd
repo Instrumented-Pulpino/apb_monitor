@@ -1,6 +1,6 @@
 --Entity Prop21 for property Prop21
 --Formula is :
---assert  always(fell(activate_task_service) -> (E0 or E3 or E4)); 
+--assert  always((call_service_counter = reentrancy_counter) or (call_service_counter = (reentrancy_counter - 1))); 
 
 
 
@@ -15,9 +15,8 @@ entity Prop21 is
 	 port(
 	 clk : in std_logic;
 	 reset_n : in std_logic;
-	 cond_20_2 : in std_logic;
 	 pending_20 : out std_logic;
-	 trigger_imply_20_2 : out std_logic
+	 trigger_always_20_1 : out std_logic
 	);
 end entity Prop21;
 --end of entity 
@@ -27,21 +26,12 @@ end entity Prop21;
 architecture mon of Prop21 is
 
 --internal signal
-signal	trigger_always_20_1, trigger_init_20_0	: std_logic;
+signal	trigger_init_20_0	: std_logic;
 
 begin
 
 --pending expression
 	pending_20 <= '0';
-
-	imply_20_2 : mnt_impl	--no generic port
-	port map (
-		start => trigger_always_20_1,
-		cond => cond_20_2,
-		trigger => trigger_imply_20_2
-	);
-
-
 
 	always_20_1 : mnt_always
 	generic map (

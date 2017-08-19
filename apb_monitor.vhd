@@ -28,31 +28,40 @@ end apb_monitor;
 
 architecture architecture_apb_monitor of apb_monitor is
 
-  constant ADDR_reg_tpl_kern_srunning          : std_logic_vector(31 downto 0) := X"1A108000";
-  constant ADDR_reg_tpl_kern_selected          : std_logic_vector(31 downto 0) := X"1A108004";
-  constant ADDR_reg_tpl_kern_running           : std_logic_vector(31 downto 0) := X"1A108008";
-  constant ADDR_reg_tpl_kern_elected           : std_logic_vector(31 downto 0) := X"1A10800C";
-  constant ADDR_reg_tpl_kern_runningID         : std_logic_vector(31 downto 0) := X"1A108010";
-  constant ADDR_reg_tpl_kern_electedID         : std_logic_vector(31 downto 0) := X"1A108014";
-  constant ADDR_tpl_kern_need_switch           : std_logic_vector(31 downto 0) := X"1A108018";
-  constant ADDR_tpl_kern_need_schedule         : std_logic_vector(31 downto 0) := X"1A10801C";
-  constant ADDR_reg_OS_instru_service          : std_logic_vector(31 downto 0) := X"1A108020";
-  constant ADDR_reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0) := X"1A108024";
-  constant ADDR_reg_OS_reentrancy_counter      : std_logic_vector(31 downto 0) := X"1A108028";
-  constant ADDR_reg_config                     : std_logic_vector(31 downto 0) := X"1A10802C";
+  function b2l (src : std.standard.boolean) return std_logic is
+    variable R : std_logic;
+  begin
+    if src then
+      R := '1';
+    else
+      R := '0';
+    end if;
+    return R;
+  end b2l;
 
-  signal reg_tpl_kern_srunning          : std_logic_vector(31 downto 0);
-  signal reg_tpl_kern_selected          : std_logic_vector(31 downto 0);
-  signal reg_tpl_kern_running           : std_logic_vector(31 downto 0);
-  signal reg_tpl_kern_elected           : std_logic_vector(31 downto 0);
-  signal reg_tpl_kern_runningID         : std_logic_vector(31 downto 0);
-  signal reg_tpl_kern_electedID         : std_logic_vector(31 downto 0);
-  signal tpl_kern_need_switch           : std_logic_vector(1 downto 0);
-  signal tpl_kern_need_schedule         : std_logic;
-  signal reg_OS_instru_service          : std_logic_vector(31 downto 0);
-  signal reg_OS_instru_kernel_functions : std_logic_vector(31 downto 0);
-  signal reg_config                     : std_logic_vector(31 downto 0);
-  signal reg_OS_reentrancy_counter      : unsigned(31 downto 0);
+  constant ADDR_reg_tpl_kern_srunning                : std_logic_vector(31 downto 0) := X"1A108000";
+  constant ADDR_reg_tpl_kern_selected                : std_logic_vector(31 downto 0) := X"1A108004";
+  constant ADDR_reg_tpl_kern_running                 : std_logic_vector(31 downto 0) := X"1A108008";
+  constant ADDR_reg_tpl_kern_elected                 : std_logic_vector(31 downto 0) := X"1A10800C";
+  constant ADDR_reg_tpl_kern_runningID               : std_logic_vector(31 downto 0) := X"1A108010";
+  constant ADDR_reg_tpl_kern_electedID               : std_logic_vector(31 downto 0) := X"1A108014";
+  constant ADDR_tpl_kern_need_switch                 : std_logic_vector(31 downto 0) := X"1A108018";
+  constant ADDR_tpl_kern_need_schedule               : std_logic_vector(31 downto 0) := X"1A10801C";
+  constant ADDR_reg_OS_instru_service                : std_logic_vector(31 downto 0) := X"1A108020";
+  constant ADDR_reg_OS_instru_kernel_functions       : std_logic_vector(31 downto 0) := X"1A108024";
+  constant ADDR_reg_OS_instru_kernel_scall_functions : std_logic_vector(31 downto 0) := X"1A108028";
+
+  signal reg_tpl_kern_srunning                : std_logic_vector(31 downto 0);
+  signal reg_tpl_kern_selected                : std_logic_vector(31 downto 0);
+  signal reg_tpl_kern_running                 : std_logic_vector(31 downto 0);
+  signal reg_tpl_kern_elected                 : std_logic_vector(31 downto 0);
+  signal reg_tpl_kern_runningID               : std_logic_vector(31 downto 0);
+  signal reg_tpl_kern_electedID               : std_logic_vector(31 downto 0);
+  signal tpl_kern_need_switch                 : std_logic_vector(1 downto 0);
+  signal tpl_kern_need_schedule               : std_logic;
+  signal reg_OS_instru_service                : std_logic_vector(31 downto 0);
+  signal reg_OS_instru_kernel_functions       : std_logic_vector(31 downto 0);
+  signal reg_OS_instru_kernel_scall_functions : std_logic_vector(31 downto 0);
 
   -- tpl_kern state machine
   signal kernel_state_bits : std_logic_vector(2 downto 0);
@@ -70,10 +79,18 @@ architecture architecture_apb_monitor of apb_monitor is
       E5                            : in  std_logic;
       E6                            : in  std_logic;
       E7                            : in  std_logic;
-      reentrancy_level_1            : in  std_logic;
       call_handler                  : in  std_logic;
+      call_handler_enter            : in  std_logic;
+      call_handler_exit             : in  std_logic;
+      reentrancy_counter            : in  unsigned(1 downto 0);
       call_service                  : in  std_logic;
+      call_service_enter            : in  std_logic;
+      call_service_exit             : in  std_logic;
+      call_service_counter          : in  unsigned(1 downto 0);
       call_context                  : in  std_logic;
+      call_context_enter            : in  std_logic;
+      call_context_exit             : in  std_logic;
+      call_context_counter          : in  unsigned(1 downto 0);
       compare_entries               : in  std_logic;
       bubble_up                     : in  std_logic;
       bubble_down                   : in  std_logic;
@@ -115,57 +132,57 @@ architecture architecture_apb_monitor of apb_monitor is
       terminate_application_service : in  std_logic;
       increment_counter_service     : in  std_logic;
       call_terminate_task_service   : in  std_logic;
-      reset                         : in  std_logic;
-      enable_IT                     : in  std_logic;
       pending                       : out std_logic;
       valid                         : out std_logic;
-      valid_47_Prop01               : out std_logic;
-      valid_48_Prop02               : out std_logic;
-      valid_49_Prop03               : out std_logic;
-      valid_50_Prop04               : out std_logic;
-      valid_51_Prop05               : out std_logic;
-      valid_52_Prop06               : out std_logic;
-      valid_53_Prop07               : out std_logic;
-      valid_54_Prop08               : out std_logic;
-      valid_55_Prop09               : out std_logic;
-      valid_56_Prop10               : out std_logic;
-      valid_57_Prop11               : out std_logic;
-      valid_58_Prop12               : out std_logic;
-      valid_59_Prop13               : out std_logic;
-      valid_60_Prop14               : out std_logic;
-      valid_61_Prop15               : out std_logic;
-      valid_62_Prop16               : out std_logic;
-      valid_63_Prop17               : out std_logic;
-      valid_64_Prop18               : out std_logic;
-      valid_65_Prop19               : out std_logic;
-      valid_66_Prop20               : out std_logic;
-      valid_67_Prop21               : out std_logic;
-      valid_68_Prop22               : out std_logic;
-      valid_69_Prop23               : out std_logic;
-      valid_70_Prop24               : out std_logic;
-      valid_71_Prop25               : out std_logic;
-      valid_72_Prop26               : out std_logic;
-      valid_73_Prop27               : out std_logic;
-      valid_74_Prop28               : out std_logic;
-      valid_75_Prop29               : out std_logic;
-      valid_76_Prop30               : out std_logic;
-      valid_77_Prop31               : out std_logic;
-      valid_78_Prop32               : out std_logic;
-      valid_79_Prop33               : out std_logic;
-      valid_80_Prop34               : out std_logic;
-      valid_81_Prop35               : out std_logic;
-      valid_82_Prop36               : out std_logic;
-      valid_83_Prop37               : out std_logic;
-      valid_84_Prop38               : out std_logic;
-      valid_85_Prop39               : out std_logic;
-      valid_86_Prop40               : out std_logic;
-      valid_87_Prop41               : out std_logic;
-      valid_88_Prop42               : out std_logic;
-      valid_89_Prop43               : out std_logic;
-      valid_90_Prop44               : out std_logic;
-      valid_91_Prop45               : out std_logic;
-      valid_92_Prop46               : out std_logic;
-      valid_93_Prop47               : out std_logic);
+      valid_49_Prop01               : out std_logic;
+      valid_50_Prop02               : out std_logic;
+      valid_51_Prop03               : out std_logic;
+      valid_52_Prop04               : out std_logic;
+      valid_53_Prop05               : out std_logic;
+      valid_54_Prop06               : out std_logic;
+      valid_55_Prop07               : out std_logic;
+      valid_56_Prop08               : out std_logic;
+      valid_57_Prop09               : out std_logic;
+      valid_58_Prop10               : out std_logic;
+      valid_59_Prop11               : out std_logic;
+      valid_60_Prop12               : out std_logic;
+      valid_61_Prop13               : out std_logic;
+      valid_62_Prop14               : out std_logic;
+      valid_63_Prop15               : out std_logic;
+      valid_64_Prop16               : out std_logic;
+      valid_65_Prop17               : out std_logic;
+      valid_66_Prop18               : out std_logic;
+      valid_67_Prop19               : out std_logic;
+      valid_68_Prop20               : out std_logic;
+      valid_69_Prop21               : out std_logic;
+      valid_70_Prop22               : out std_logic;
+      valid_71_Prop23               : out std_logic;
+      valid_72_Prop24               : out std_logic;
+      valid_73_Prop25               : out std_logic;
+      valid_74_Prop26               : out std_logic;
+      valid_75_Prop27               : out std_logic;
+      valid_76_Prop28               : out std_logic;
+      valid_77_Prop29               : out std_logic;
+      valid_78_Prop30               : out std_logic;
+      valid_79_Prop31               : out std_logic;
+      valid_80_Prop32               : out std_logic;
+      valid_81_Prop33               : out std_logic;
+      valid_82_Prop34               : out std_logic;
+      valid_83_Prop35               : out std_logic;
+      valid_84_Prop36               : out std_logic;
+      valid_85_Prop37               : out std_logic;
+      valid_86_Prop38               : out std_logic;
+      valid_87_Prop39               : out std_logic;
+      valid_88_Prop40               : out std_logic;
+      valid_89_Prop41               : out std_logic;
+      valid_90_Prop42               : out std_logic;
+      valid_91_Prop43               : out std_logic;
+      valid_92_Prop44               : out std_logic;
+      valid_93_Prop45               : out std_logic;
+      valid_94_Prop46               : out std_logic;
+      valid_95_Prop47               : out std_logic;
+      valid_96_Prop48               : out std_logic;
+      valid_97_Prop49               : out std_logic);
   end component trampoline_properties;
 
   -- Atomics
@@ -178,10 +195,22 @@ architecture architecture_apb_monitor of apb_monitor is
   signal E6                            : std_logic;
   signal E7                            : std_logic;
   signal running_equal_elected         : std_logic;
-  signal reentrancy_level_1            : std_logic;
   signal call_handler                  : std_logic;
+  signal reentrancy_counter            : unsigned(1 downto 0);
+  signal call_handler_enter            : std_logic;
+  signal call_handler_exit             : std_logic;
   signal call_service                  : std_logic;
+  signal call_service_counter          : unsigned(1 downto 0);
+  signal call_service_enter            : std_logic;
+  signal call_service_exit             : std_logic;
   signal call_context                  : std_logic;
+  signal call_context_counter          : unsigned(1 downto 0);
+  signal call_context_enter            : std_logic;
+  signal call_context_exit             : std_logic;
+  signal call_save                     : std_logic;
+  signal call_save_counter             : unsigned(1 downto 0);
+  signal call_save_enter               : std_logic;
+  signal call_save_exit                : std_logic;
   signal compare_entries               : std_logic;
   signal bubble_up                     : std_logic;
   signal bubble_down                   : std_logic;
@@ -208,7 +237,6 @@ architecture architecture_apb_monitor of apb_monitor is
   signal central_interrupt_handler     : std_logic;
   signal activate_isr2                 : std_logic;
   signal counter_tick                  : std_logic;
-  signal call_save                     : std_logic;
   signal notify_receiving_mos          : std_logic;
   signal activate_task_service         : std_logic;
   signal terminate_task_service        : std_logic;
@@ -222,8 +250,6 @@ architecture architecture_apb_monitor of apb_monitor is
   signal terminate_application_service : std_logic;
   signal increment_counter_service     : std_logic;
   signal call_terminate_task_service   : std_logic;
-  signal reset                         : std_logic;
-  signal enable_IT                     : std_logic;
 
   component services is
     port (
@@ -262,104 +288,141 @@ begin
   kernel_state_bits <= tpl_kern_need_schedule & tpl_kern_need_switch;
 
   -- Atomics
-  E0                        <= kernel_state(0);
-  E1                        <= kernel_state(1);
-  E2                        <= kernel_state(2);
-  E3                        <= kernel_state(3);
-  E4                        <= kernel_state(4);
-  E5                        <= kernel_state(5);
-  E6                        <= kernel_state(6);
-  E7                        <= kernel_state(7);
-  running_equal_elected     <= '1' when (reg_tpl_kern_running = reg_tpl_kern_elected) else '0';
-  reentrancy_level_1        <= '1' when (unsigned(reg_OS_reentrancy_counter) = 1)     else '0';
-  call_handler              <= reg_OS_instru_kernel_functions(0);
-  call_service              <= reg_OS_instru_kernel_functions(1);
-  call_context              <= reg_OS_instru_kernel_functions(2);
-  compare_entries           <= reg_OS_instru_kernel_functions(3);
-  bubble_up                 <= reg_OS_instru_kernel_functions(4);
-  bubble_down               <= reg_OS_instru_kernel_functions(5);
-  put_new_proc              <= reg_OS_instru_kernel_functions(6);
-  put_preempted_proc        <= reg_OS_instru_kernel_functions(7);
-  remove_front_proc         <= reg_OS_instru_kernel_functions(8);
-  get_internal_resource     <= reg_OS_instru_kernel_functions(9);
-  release_internal_resource <= reg_OS_instru_kernel_functions(10);
-  preempt                   <= reg_OS_instru_kernel_functions(11);
-  run_elected               <= reg_OS_instru_kernel_functions(12);
-  start                     <= reg_OS_instru_kernel_functions(13);
-  schedule_from_running     <= reg_OS_instru_kernel_functions(14);
-  terminate                 <= reg_OS_instru_kernel_functions(15);
-  block_s                   <= reg_OS_instru_kernel_functions(16);
-  activate_task             <= reg_OS_instru_kernel_functions(17);
-  release                   <= reg_OS_instru_kernel_functions(18);
-  set_event                 <= reg_OS_instru_kernel_functions(19);
-  init_proc                 <= reg_OS_instru_kernel_functions(20);
-  init_os                   <= reg_OS_instru_kernel_functions(21);
-  remove_proc               <= reg_OS_instru_kernel_functions(22);
-  start_scheduling          <= reg_OS_instru_kernel_functions(23);
-  action_activate_task      <= reg_OS_instru_kernel_functions(24);
-  action_set_event          <= reg_OS_instru_kernel_functions(25);
-  central_interrupt_handler <= reg_OS_instru_kernel_functions(26);
-  activate_isr2             <= reg_OS_instru_kernel_functions(27);
-  counter_tick              <= reg_OS_instru_kernel_functions(28);
-  call_save                 <= reg_OS_instru_kernel_functions(29);
-  notify_receiving_mos      <= reg_OS_instru_kernel_functions(30);
-  reset                     <= reg_config(0);
-  enable_IT                 <= reg_config(1);
+  E0 <= kernel_state(0);
+  E1 <= kernel_state(1);
+  E2 <= kernel_state(2);
+  E3 <= kernel_state(3);
+  E4 <= kernel_state(4);
+  E5 <= kernel_state(5);
+  E6 <= kernel_state(6);
+  E7 <= kernel_state(7);
 
+  running_equal_elected <= b2l(reg_tpl_kern_running = reg_tpl_kern_elected);
+
+  call_handler       <= b2l(reentrancy_counter >= 1);
+  call_handler_enter <= reg_OS_instru_kernel_scall_functions(0);
+  call_handler_exit  <= reg_OS_instru_kernel_scall_functions(1);
+
+  call_service       <= b2l(call_service_counter >= 1);
+  call_service_enter <= reg_OS_instru_kernel_scall_functions(2);
+  call_service_exit  <= reg_OS_instru_kernel_scall_functions(3);
+
+  call_context       <= b2l(call_context_counter >= 1);
+  call_context_enter <= reg_OS_instru_kernel_scall_functions(4);
+  call_context_exit  <= reg_OS_instru_kernel_scall_functions(5);
+
+  call_save       <= b2l(call_save_counter >= 1);
+  call_save_enter <= reg_OS_instru_kernel_scall_functions(6);
+  call_save_exit  <= reg_OS_instru_kernel_scall_functions(7);
+
+  compare_entries           <= reg_OS_instru_kernel_functions(0);
+  bubble_up                 <= reg_OS_instru_kernel_functions(1);
+  bubble_down               <= reg_OS_instru_kernel_functions(2);
+  put_new_proc              <= reg_OS_instru_kernel_functions(3);
+  put_preempted_proc        <= reg_OS_instru_kernel_functions(4);
+  remove_front_proc         <= reg_OS_instru_kernel_functions(5);
+  get_internal_resource     <= reg_OS_instru_kernel_functions(6);
+  release_internal_resource <= reg_OS_instru_kernel_functions(7);
+  preempt                   <= reg_OS_instru_kernel_functions(8);
+  run_elected               <= reg_OS_instru_kernel_functions(9);
+  start                     <= reg_OS_instru_kernel_functions(10);
+  schedule_from_running     <= reg_OS_instru_kernel_functions(11);
+  terminate                 <= reg_OS_instru_kernel_functions(12);
+  block_s                   <= reg_OS_instru_kernel_functions(13);
+  activate_task             <= reg_OS_instru_kernel_functions(14);
+  release                   <= reg_OS_instru_kernel_functions(15);
+  set_event                 <= reg_OS_instru_kernel_functions(16);
+  init_proc                 <= reg_OS_instru_kernel_functions(17);
+  init_os                   <= reg_OS_instru_kernel_functions(18);
+  remove_proc               <= reg_OS_instru_kernel_functions(19);
+  start_scheduling          <= reg_OS_instru_kernel_functions(20);
+  action_activate_task      <= reg_OS_instru_kernel_functions(21);
+  action_set_event          <= reg_OS_instru_kernel_functions(22);
+  central_interrupt_handler <= reg_OS_instru_kernel_functions(23);
+  activate_isr2             <= reg_OS_instru_kernel_functions(24);
+  counter_tick              <= reg_OS_instru_kernel_functions(25);
+  notify_receiving_mos      <= reg_OS_instru_kernel_functions(26);
 
   sequential_process : process (HCLK, HRESETn) is
   begin  -- process sequential_process
     if HRESETn = '0' then                 -- asynchronous reset (active low)
-      reg_tpl_kern_srunning          <= (others => '0');
-      reg_tpl_kern_selected          <= (others => '0');
-      reg_tpl_kern_running           <= (others => '0');
-      reg_tpl_kern_elected           <= (others => '0');
-      reg_tpl_kern_runningID         <= (others => '1');
-      reg_tpl_kern_electedID         <= (others => '1');
-      tpl_kern_need_switch           <= (others => '0');
-      tpl_kern_need_schedule         <= '0';
-      reg_OS_instru_service          <= (others => '0');
-      reg_OS_instru_kernel_functions <= (others => '0');
-      reg_OS_reentrancy_counter      <= (others => '0');
-      reg_config                     <= (others => '0');
-      trigger                        <= '0';
-      monitor_valid_i                <= '0';
+      reg_tpl_kern_srunning                <= (others => '0');
+      reg_tpl_kern_selected                <= (others => '0');
+      reg_tpl_kern_running                 <= (others => '0');
+      reg_tpl_kern_elected                 <= (others => '0');
+      reg_tpl_kern_runningID               <= (others => '1');
+      reg_tpl_kern_electedID               <= (others => '1');
+      tpl_kern_need_switch                 <= (others => '0');
+      tpl_kern_need_schedule               <= '0';
+      reg_OS_instru_service                <= (others => '0');
+      reg_OS_instru_kernel_functions       <= (others => '0');
+      reg_OS_instru_kernel_scall_functions <= (others => '0');
+      reentrancy_counter                   <= (others => '0');
+      call_service_counter                 <= (others => '0');
+      call_context_counter                 <= (others => '0');
+      call_save_counter                    <= (others => '0');
+      trigger                              <= '0';
+      monitor_valid_i                      <= '0';
     elsif HCLK'event and HCLK = '1' then  -- rising clock edge
       -- Default assignment
-      trigger         <= '0';
-      monitor_valid_i <= next_monitor_valid;
+      trigger                              <= '0';
+      monitor_valid_i                      <= next_monitor_valid;
+      reg_OS_instru_kernel_scall_functions <= (others => '0');
 
       if (PSEL = '1' and PENABLE = '1') then
 
         -- Reading APB bus (CPU to Fabric)
         if(PWRITE = '1') then
           case PADDR is
-            when ADDR_reg_tpl_kern_srunning          => reg_tpl_kern_srunning          <= PWDATA;
-            when ADDR_reg_tpl_kern_selected          => reg_tpl_kern_selected          <= PWDATA;
-            when ADDR_reg_tpl_kern_running           => reg_tpl_kern_running           <= PWDATA;
-            when ADDR_reg_tpl_kern_elected           => reg_tpl_kern_elected           <= PWDATA;
-            when ADDR_reg_tpl_kern_runningID         => reg_tpl_kern_runningID         <= PWDATA;
-            when ADDR_reg_tpl_kern_electedID         => reg_tpl_kern_electedID         <= PWDATA;
-            when ADDR_tpl_kern_need_switch           => tpl_kern_need_switch           <= PWDATA(1 downto 0);
-            when ADDR_tpl_kern_need_schedule         => tpl_kern_need_schedule         <= PWDATA(0);
-            when ADDR_reg_OS_instru_service          => reg_OS_instru_service          <= PWDATA; trigger <= '1';
-            when ADDR_reg_OS_instru_kernel_functions => reg_OS_instru_kernel_functions <= PWDATA xor reg_OS_instru_kernel_functions;
-            when ADDR_reg_config                     => reg_config                     <= PWDATA;
-            when ADDR_reg_OS_reentrancy_counter      => reg_OS_reentrancy_counter      <= unsigned(PWDATA);
-            when others                              => null;
+            when ADDR_reg_tpl_kern_srunning                => reg_tpl_kern_srunning                <= PWDATA;
+            when ADDR_reg_tpl_kern_selected                => reg_tpl_kern_selected                <= PWDATA;
+            when ADDR_reg_tpl_kern_running                 => reg_tpl_kern_running                 <= PWDATA;
+            when ADDR_reg_tpl_kern_elected                 => reg_tpl_kern_elected                 <= PWDATA;
+            when ADDR_reg_tpl_kern_runningID               => reg_tpl_kern_runningID               <= PWDATA;
+            when ADDR_reg_tpl_kern_electedID               => reg_tpl_kern_electedID               <= PWDATA;
+            when ADDR_tpl_kern_need_switch                 => tpl_kern_need_switch                 <= PWDATA(1 downto 0);
+            when ADDR_tpl_kern_need_schedule               => tpl_kern_need_schedule               <= PWDATA(0);
+            when ADDR_reg_OS_instru_service                => reg_OS_instru_service                <= PWDATA; trigger <= '1';
+            when ADDR_reg_OS_instru_kernel_functions       => reg_OS_instru_kernel_functions       <= PWDATA xor reg_OS_instru_kernel_functions;
+            when ADDR_reg_OS_instru_kernel_scall_functions => reg_OS_instru_kernel_scall_functions <= PWDATA;
+            when others                                    => null;
           end case;
         end if;
 
       end if;
+
+      if call_handler_enter = '1' then
+        reentrancy_counter <= reentrancy_counter + 1;
+      elsif call_handler_exit = '1' then
+        reentrancy_counter <= reentrancy_counter - 1;
+      end if;
+
+      if call_service_enter = '1' then
+        call_service_counter <= call_service_counter + 1;
+      elsif call_service_exit = '1' then
+        call_service_counter <= call_service_counter - 1;
+      end if;
+
+      if call_context_enter = '1' then
+        call_context_counter <= call_context_counter + 1;
+      elsif call_context_exit = '1' then
+        call_context_counter <= call_context_counter - 1;
+      end if;
+
+      if call_save_enter = '1' then
+        call_save_counter <= call_save_counter + 1;
+      elsif call_save_exit = '1' then
+        call_save_counter <= call_save_counter - 1;
+      end if;
+
     end if;
   end process sequential_process;
 
   combinational_process : process (PADDR, PENABLE, PSEL, PWRITE,
                                    kernel_state_bits, monitor_valid_i,
                                    reg_OS_instru_kernel_functions,
-                                   reg_OS_instru_service,
-                                   reg_OS_reentrancy_counter, reg_config,
-                                   reg_tpl_kern_elected,
+                                   reg_OS_instru_kernel_scall_functions,
+                                   reg_OS_instru_service, reg_tpl_kern_elected,
                                    reg_tpl_kern_electedID,
                                    reg_tpl_kern_running,
                                    reg_tpl_kern_runningID,
@@ -371,19 +434,18 @@ begin
     -- Writing APB bus (Fabric to CPU)
     if (PWRITE = '0' and PSEL = '1' and PENABLE = '1') then
       case PADDR is
-        when ADDR_reg_tpl_kern_srunning          => PRDATA <= reg_tpl_kern_srunning;
-        when ADDR_reg_tpl_kern_selected          => PRDATA <= reg_tpl_kern_selected;
-        when ADDR_reg_tpl_kern_running           => PRDATA <= reg_tpl_kern_running;
-        when ADDR_reg_tpl_kern_elected           => PRDATA <= reg_tpl_kern_elected;
-        when ADDR_reg_tpl_kern_runningID         => PRDATA <= reg_tpl_kern_runningID;
-        when ADDR_reg_tpl_kern_electedID         => PRDATA <= reg_tpl_kern_electedID;
-        when ADDR_tpl_kern_need_switch           => PRDATA <= (X"0000000" & "00" & tpl_kern_need_switch);
-        when ADDR_tpl_kern_need_schedule         => PRDATA <= (X"0000000" & "000" & tpl_kern_need_schedule);
-        when ADDR_reg_OS_instru_service          => PRDATA <= reg_OS_instru_service;
-        when ADDR_reg_OS_instru_kernel_functions => PRDATA <= reg_OS_instru_kernel_functions;
-        when ADDR_reg_config                     => PRDATA <= reg_config;
-        when ADDR_reg_OS_reentrancy_counter      => PRDATA <= std_logic_vector(reg_OS_reentrancy_counter);
-        when others                              => PRDATA <= (others => '0');
+        when ADDR_reg_tpl_kern_srunning                => PRDATA <= reg_tpl_kern_srunning;
+        when ADDR_reg_tpl_kern_selected                => PRDATA <= reg_tpl_kern_selected;
+        when ADDR_reg_tpl_kern_running                 => PRDATA <= reg_tpl_kern_running;
+        when ADDR_reg_tpl_kern_elected                 => PRDATA <= reg_tpl_kern_elected;
+        when ADDR_reg_tpl_kern_runningID               => PRDATA <= reg_tpl_kern_runningID;
+        when ADDR_reg_tpl_kern_electedID               => PRDATA <= reg_tpl_kern_electedID;
+        when ADDR_tpl_kern_need_switch                 => PRDATA <= (X"0000000" & "00" & tpl_kern_need_switch);
+        when ADDR_tpl_kern_need_schedule               => PRDATA <= (X"0000000" & "000" & tpl_kern_need_schedule);
+        when ADDR_reg_OS_instru_service                => PRDATA <= reg_OS_instru_service;
+        when ADDR_reg_OS_instru_kernel_functions       => PRDATA <= reg_OS_instru_kernel_functions;
+        when ADDR_reg_OS_instru_kernel_scall_functions => PRDATA <= reg_OS_instru_kernel_scall_functions;
+        when others                                    => PRDATA <= (others => '0');
       end case;
     end if;
 
@@ -418,8 +480,17 @@ begin
       E6                            => E6,
       E7                            => E7,
       call_handler                  => call_handler,
+      call_handler_enter            => call_handler_enter,
+      call_handler_exit             => call_handler_exit,
+      reentrancy_counter            => reentrancy_counter,
       call_service                  => call_service,
+      call_service_enter            => call_service_enter,
+      call_service_exit             => call_service_exit,
+      call_service_counter          => call_service_counter,
       call_context                  => call_context,
+      call_context_enter            => call_context_enter,
+      call_context_exit             => call_context_exit,
+      call_context_counter          => call_context_counter,
       compare_entries               => compare_entries,
       bubble_up                     => bubble_up,
       bubble_down                   => bubble_down,
@@ -461,9 +532,6 @@ begin
       terminate_application_service => terminate_application_service,
       increment_counter_service     => increment_counter_service,
       call_terminate_task_service   => call_terminate_task_service,
-      reentrancy_level_1            => reentrancy_level_1,
-      reset                         => reset,
-      enable_IT                     => enable_IT,
       valid                         => valid);
 
   assert (HRESETn /= '1' or valid = '1') report "Valid false !" severity failure;
@@ -505,83 +573,87 @@ begin
 
   -- psl property Prop08 is always(rose(E4) -> (running_equal_elected));
 
-  -- psl property Prop09 is always((rose(call_handler) and (reentrancy_level_1 = '1')) -> running_equal_elected);
+  -- psl property Prop09 is always((rose(call_handler) and (reentrancy_counter = 1)) -> running_equal_elected);
 
-  -- psl property Prop10 is always((fell(call_handler) and (reentrancy_level_1 = '1')) -> running_equal_elected);
+  -- psl property Prop10 is always((fell(call_handler) and (reentrancy_counter = 1)) -> running_equal_elected);
 
   -- psl property Prop11 is always(fell(call_handler) -> E0);
 
-  -- psl property Prop12 is always(fell(call_service) -> (not(E5) and not(E7)));
+  -- psl property Prop12 is always((call_service_enter and b2l(reentrancy_counter = 1)) -> E0);
 
-  -- psl property Prop13 is always(rose(call_context) -> (E1 or E3));
+  -- psl property Prop13 is always(fell(call_service) -> (not(E5) and not(E7)));
 
-  -- psl property Prop14 is always(rose(call_context) -> (reentrancy_level_1));
+  -- psl property Prop14 is always(rose(call_context) -> (E1 or E3));
 
-  -- psl property Prop15 is always(run_elected -> call_context);
+  -- psl property Prop15 is always(rose(call_context) -> b2l(reentrancy_counter = 1));
 
-  -- psl property Prop16 is always(call_service -> call_handler);
+  -- psl property Prop16 is always(run_elected -> call_context);
 
-  -- psl property Prop17 is always(call_context -> call_handler);
+  -- psl property Prop17 is always(call_service -> call_handler);
 
-  -- psl property Prop18 is always(rose(call_handler) -> (call_service before fell(call_handler)));
+  -- psl property Prop18 is always(call_context -> call_handler);
 
-  -- psl property Prop19 is always(rose(call_save) -> (E3 and call_context));
+  -- psl property Prop19 is always(call_handler_enter -> (call_service before call_handler_exit));
 
-  -- psl property Prop20 is always(activate_task_service -> (not(E1) and not(E5)));
+  -- psl property Prop20 is never(call_handler_enter and b2l(unsigned(reentrancy_counter) = 3));
 
-  -- psl property Prop21 is always(fell(activate_task_service) -> (E0 or E3 or E4));
+  -- psl property Prop21 is always(call_service_counter <= reentrancy_counter);
 
-  -- psl property Prop22 is always(terminate_task_service -> (E0 or E1));
+  -- psl property Prop22 is always(rose(call_save) -> (E3 and call_context and b2l(reentrancy_counter = 1)));
 
-  -- psl property Prop23 is always(chain_task_service -> not(E3 or E7));
+  -- psl property Prop23 is always(activate_task_service -> (not(E1) and not(E5)));
 
-  -- psl property Prop24 is always(fell(chain_task_service) -> (E0 or E1));
+  -- psl property Prop24 is always(fell(activate_task_service) -> (E0 or E3 or E4));
 
-  -- psl property Prop25 is always(schedule_service -> (E0 or E3));
+  -- psl property Prop25 is always(terminate_task_service -> (E0 or E1));
 
-  -- psl property Prop26 is always(set_event_service -> not(E1 or E5));
+  -- psl property Prop26 is always(chain_task_service -> not(E3 or E7));
 
-  -- psl property Prop27 is always(fell(set_event_service) -> (E0 or E3 or E4));
+  -- psl property Prop27 is always(fell(chain_task_service) -> (E0 or E1));
 
-  -- psl property Prop28 is always(wait_event_service -> (E0 or E3));
+  -- psl property Prop28 is always(schedule_service -> (E0 or E3));
 
-  -- psl property Prop29 is always(release_resource_service -> (E0 or E3));
+  -- psl property Prop29 is always(set_event_service -> not(E1 or E5));
 
-  -- psl property Prop30 is always(compare_entries -> (bubble_up or bubble_down));
+  -- psl property Prop30 is always(fell(set_event_service) -> (E0 or E3 or E4));
 
-  -- psl property Prop31 is always(bubble_up -> (put_new_proc or put_preempted_proc));
+  -- psl property Prop31 is always(wait_event_service -> (E0 or E3));
 
-  -- psl property Prop32 is always(bubble_down -> (remove_front_proc or remove_proc));
+  -- psl property Prop32 is always(release_resource_service -> (E0 or E3));
 
-  -- psl property Prop33 is always(put_preempted_proc -> run_elected);
+  -- psl property Prop33 is always(compare_entries -> (bubble_up or bubble_down));
 
-  -- psl property Prop34 is always(put_new_proc -> (release or activate_task or activate_isr2));
+  -- psl property Prop34 is always(bubble_up -> (put_new_proc or put_preempted_proc));
 
-  -- psl property Prop35 is always(remove_front_proc -> start);
+  -- psl property Prop35 is always(bubble_down -> (remove_front_proc or remove_proc));
 
-  -- psl property Prop36 is always(init_proc -> start);
+  -- psl property Prop36 is always(put_preempted_proc -> run_elected);
 
-  -- psl property Prop37 is always(release -> set_event);
+  -- psl property Prop37 is always(put_new_proc -> (release or activate_task or activate_isr2));
 
-  -- psl property Prop38 is always(run_elected -> call_context);
+  -- psl property Prop38 is always(remove_front_proc -> start);
 
-  -- psl property Prop39 is always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service or call_terminate_task_service));
+  -- psl property Prop39 is always(init_proc -> start);
 
-  -- psl property Prop40 is always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service));
+  -- psl property Prop40 is always(release -> set_event);
 
-  -- psl property Prop41 is always(block_s -> wait_event_service);
+  -- psl property Prop41 is always(start -> (schedule_from_running or terminate_task_service or terminate_isr2_service or chain_task_service or block_s or start_scheduling or release or terminate_application_service or call_terminate_task_service));
 
-  -- psl property Prop42 is always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service));
+  -- psl property Prop42 is always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service));
 
-  -- psl property Prop43 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service));
+  -- psl property Prop43 is always(block_s -> wait_event_service);
 
-  -- psl property Prop44 is always(set_event -> (set_event_service or action_set_event));
+  -- psl property Prop44 is always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service));
 
-  -- psl property Prop45 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick or increment_counter_service or notify_receiving_mos));
+  -- psl property Prop45 is always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service));
 
-  -- psl property Prop46 is always(start_scheduling -> start_os_service);
+  -- psl property Prop46 is always(set_event -> (set_event_service or action_set_event));
 
-  -- psl property Prop47 is always(init_os -> start_os_service);
+  -- psl property Prop47 is always(schedule_from_running -> (activate_task_service or schedule_service or set_event_service or central_interrupt_handler or release_resource_service or counter_tick or increment_counter_service or notify_receiving_mos));
+
+  -- psl property Prop48 is always(start_scheduling -> start_os_service);
+
+  -- psl property Prop49 is always(init_os -> start_os_service);
 
   -- psl assert Prop01;
   -- psl assert Prop02;
@@ -630,5 +702,7 @@ begin
   -- psl assert Prop45;
   -- psl assert Prop46;
   -- psl assert Prop47;
+  -- psl assert Prop48;
+  -- psl assert Prop49;
 
 end architecture_apb_monitor;

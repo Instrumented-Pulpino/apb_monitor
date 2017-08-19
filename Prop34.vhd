@@ -1,6 +1,6 @@
 --Entity Prop34 for property Prop34
 --Formula is :
---assert  always(put_new_proc -> (release or activate_task or activate_isr2)); 
+--assert  always(bubble_up -> (put_new_proc or put_preempted_proc)); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop25 for property Prop25
 --Formula is :
---assert  always(schedule_service -> (E0 or E3)); 
+--assert  always(terminate_task_service -> (E0 or E1)); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop38 for property Prop38
 --Formula is :
---assert  always(run_elected -> call_context); 
+--assert  always(remove_front_proc -> start); 
 
 
 

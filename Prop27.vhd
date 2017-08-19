@@ -1,6 +1,6 @@
 --Entity Prop27 for property Prop27
 --Formula is :
---assert  always(fell(set_event_service) -> (E0 or E3 or E4)); 
+--assert  always(fell(chain_task_service) -> (E0 or E1)); 
 
 
 

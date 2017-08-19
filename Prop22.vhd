@@ -1,6 +1,6 @@
 --Entity Prop22 for property Prop22
 --Formula is :
---assert  always(terminate_task_service -> (E0 or E1)); 
+--assert  always(rose(call_save) -> (E3 and call_context and (reentrancy_counter = 1))); 
 
 
 

@@ -1,6 +1,6 @@
 --Entity Prop36 for property Prop36
 --Formula is :
---assert  always(init_proc -> start); 
+--assert  always(put_preempted_proc -> run_elected); 
 
 
 

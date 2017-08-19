@@ -1,6 +1,6 @@
 --Entity Prop42 for property Prop42
 --Formula is :
---assert  always(terminate -> (terminate_task_service or chain_task_service or terminate_isr2_service or terminate_application_service or call_terminate_task_service)); 
+--assert  always(release_internal_resource -> (block_s or terminate or schedule_service or terminate_application_service)); 
 
 
 

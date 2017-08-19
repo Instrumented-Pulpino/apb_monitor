@@ -1,6 +1,6 @@
 --Entity Prop24 for property Prop24
 --Formula is :
---assert  always(fell(chain_task_service) -> (E0 or E1)); 
+--assert  always(fell(activate_task_service) -> (E0 or E3 or E4)); 
 
 
 

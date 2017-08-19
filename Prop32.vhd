@@ -1,6 +1,6 @@
 --Entity Prop32 for property Prop32
 --Formula is :
---assert  always(bubble_down -> (remove_front_proc or remove_proc)); 
+--assert  always(release_resource_service -> (E0 or E3)); 
 
 
 

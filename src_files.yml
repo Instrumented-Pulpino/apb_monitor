@@ -67,6 +67,8 @@ apb_monitor:
     Prop45.vhd,
     Prop46.vhd,
     Prop47.vhd,
+    Prop48.vhd,
+    Prop49.vhd,
     services.vhd,
     trampoline_properties.vhd,
     apb_monitor.vhd

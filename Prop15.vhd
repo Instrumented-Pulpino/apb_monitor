@@ -1,6 +1,6 @@
 --Entity Prop15 for property Prop15
 --Formula is :
---assert  always(run_elected -> call_context); 
+--assert  always(rose(call_context) -> (reentrancy_counter = 1)); 
 
 
 

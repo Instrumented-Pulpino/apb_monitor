@@ -1,6 +1,6 @@
 --Entity Prop43 for property Prop43
 --Formula is :
---assert  always(activate_task -> (activate_task_service or chain_task_service or init_os or action_activate_task or terminate_application_service)); 
+--assert  always(block_s -> wait_event_service); 
 
 
 

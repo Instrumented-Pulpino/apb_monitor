@@ -1,6 +1,6 @@
 --Entity Prop46 for property Prop46
 --Formula is :
---assert  always(start_scheduling -> start_os_service); 
+--assert  always(set_event -> (set_event_service or action_set_event)); 
 
 
 

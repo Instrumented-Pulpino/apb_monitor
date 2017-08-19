@@ -1,6 +1,6 @@
 --Entity Prop29 for property Prop29
 --Formula is :
---assert  always(release_resource_service -> (E0 or E3)); 
+--assert  always(set_event_service -> not(E1 or E5)); 
 
 
 

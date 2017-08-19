@@ -1,6 +1,6 @@
 --Entity Prop12 for property Prop12
 --Formula is :
---assert  always(fell(call_service) -> (not(E5) and not(E7))); 
+--assert  always((call_service_enter and (reentrancy_counter = 1)) -> E0); 
 
 
 

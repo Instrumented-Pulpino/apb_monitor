@@ -1,6 +1,6 @@
 --Entity Prop10 for property Prop10
 --Formula is :
---assert  always((fell(call_handler) and reentrancy_level_1) -> running_equal_elected); 
+--assert  always((fell(call_handler) and (reentrancy_counter = 1)) -> running_equal_elected); 
 
 
 
